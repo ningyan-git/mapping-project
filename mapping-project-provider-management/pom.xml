@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>mapping-project-provider</module>
+        <module>test</module>
     </modules>
     <dependencies>
         <dependency>
