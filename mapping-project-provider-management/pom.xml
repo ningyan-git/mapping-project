@@ -11,6 +11,9 @@
 
     <artifactId>mapping-project-provider-management</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>mapping-project-provider</module>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>com.aaa.eleven</groupId>
