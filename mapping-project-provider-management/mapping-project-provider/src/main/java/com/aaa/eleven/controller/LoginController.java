@@ -39,7 +39,7 @@ public class LoginController extends CommonController<User> {
     public ResultData doLogin(@RequestBody User user){
         TokenVo tokenVo = loginService.doLogin(user);
         if(tokenVo.getIfSuccess()){
-            return loginSuccess(tokenVo.getToken());
+            return loginSuccess((Object)(tokenVo.getToken()));
         }else {
             switch (tokenVo.getType()){
                 case 1:

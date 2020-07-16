@@ -20,4 +20,7 @@
     <result column="create_time" property="createTime" jdbcType="DATE" />
     <result column="modify_time" property="modifyTime" jdbcType="DATE" />
   </resultMap>
+    <select id="selectSpecialPostDetail" resultType="java.util.Map">
+      SELECT t.* ,r.path from `t_special_post` t  left join t_resource r on  t.id = r.ref_biz_id where t.id =#{id}
+    </select>
 </mapper>

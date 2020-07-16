@@ -13,13 +13,13 @@ public enum  Status {
      */
     LOGIN_SUCCESS("2001","登录成功"),
     /**
-     * 状态码：新增成功
-     */
-    DELETE_SUCCESS("2002","新增成功"),
-    /**
      * 状态码：删除成功
      */
-    INSERT_SUCCESS("2003","删除成功"),
+    DELETE_SUCCESS("2002","删除成功"),
+    /**
+     * 状态码：新增成功
+     */
+    INSERT_SUCCESS("2003","新增成功"),
     /**
      * 状态码：修改成功
      */
@@ -61,13 +61,13 @@ public enum  Status {
      */
     LOGOUT_WRONG("4006","用户异常退出"),
     /**
-     * 状态码：新增失败
-     */
-    DELETE_FAILED("4007","新增失败"),
-    /**
      * 状态码：删除失败
      */
-    INSERT_FAILED("4008","删除失败"),
+    DELETE_FAILED("4007","删除失败"),
+    /**
+     * 状态码：新增失败
+     */
+    INSERT_FAILED("4008","新增失败"),
     /**
      * 状态码：修改失败
      */

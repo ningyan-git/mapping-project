@@ -60,11 +60,10 @@
     <result column="coordinate" property="coordinate" jdbcType="LONGVARCHAR" />
   </resultMap>
   <select id="selectByConditions" resultType="java.util.Map">
-    SELECT u.id ,u.used_name, u.oa,u.qualification_level,u.certificate_code,u.belong_industry,linkman,phone,sum(IFNULL(s.score_plus,0)+IFNULL(-s.score_subtract,0)+IFNULL(s.score,0)) ,user_id FROM t_score s
-    left join t_mapping_unit u on s.unit_id = u.id
+    SELECT t.*  from t_mapping_unit t
     <where>
       <if test="null != unitName">
-        u.unit_name  like concat('%',#{unitName},'%')
+        t.unit_name  like concat('%',#{unitName},'%')
       </if>
     </where>
   </select>

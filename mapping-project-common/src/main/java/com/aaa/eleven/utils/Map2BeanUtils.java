@@ -64,7 +64,6 @@ public class Map2BeanUtils {
         }
         // 5.循环Map对象
         //Map.Entry entry 是map的一个接口，相当于getKey(),getValue()方法
-        //TODO 代码不理解
         for (Map.Entry entry : map.entrySet()) {
             String setMethodName = getSetMethodName((String) entry.getKey());
             int index = methodAccess.getIndex(setMethodName, entry.getValue().getClass());
