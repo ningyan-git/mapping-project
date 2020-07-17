@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mapping-projecct-feign" />
+        <module name="mapping-project-api" />
+        <module name="mapping-project-common" />
+        <module name="mapping-project-config" />
+        <module name="mapping-project-eureka-6081" />
+        <module name="mapping-project-mapper" />
+        <module name="mapping-project-model" />
+        <module name="mapping-project-provider" />
+        <module name="mapping-project-service" />
+        <module name="mapping-project-zuul" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mapping-projecct-feign" target="1.5" />
+      <module name="mapping-project" target="1.5" />
+      <module name="mapping-project-api" target="1.5" />
+      <module name="mapping-project-common" target="1.5" />
+      <module name="mapping-project-config" target="1.5" />
+      <module name="mapping-project-consumer-management" target="1.5" />
+      <module name="mapping-project-eureka-6081" target="1.5" />
+      <module name="mapping-project-eureka-management" target="1.5" />
+      <module name="mapping-project-management" target="1.5" />
+      <module name="mapping-project-mapper" target="1.5" />
+      <module name="mapping-project-model" target="1.5" />
+      <module name="mapping-project-provider" target="1.5" />
+      <module name="mapping-project-provider-management" target="1.5" />
+      <module name="mapping-project-service" target="1.5" />
+      <module name="mapping-project-zuul" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

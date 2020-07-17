@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-consumer-management/mapping-projecct-feign/mapping-projecct-feign.iml" filepath="$PROJECT_DIR$/mapping-project-consumer-management/mapping-projecct-feign/mapping-projecct-feign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project.iml" filepath="$PROJECT_DIR$/mapping-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-management/mapping-project-api/mapping-project-api.iml" filepath="$PROJECT_DIR$/mapping-project-management/mapping-project-api/mapping-project-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-common/mapping-project-common.iml" filepath="$PROJECT_DIR$/mapping-project-common/mapping-project-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-config/mapping-project-config.iml" filepath="$PROJECT_DIR$/mapping-project-config/mapping-project-config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-consumer-management/mapping-project-consumer-management.iml" filepath="$PROJECT_DIR$/mapping-project-consumer-management/mapping-project-consumer-management.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-eureka-management/mapping-project-eureka-6081/mapping-project-eureka-6081.iml" filepath="$PROJECT_DIR$/mapping-project-eureka-management/mapping-project-eureka-6081/mapping-project-eureka-6081.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-eureka-management/mapping-project-eureka-management.iml" filepath="$PROJECT_DIR$/mapping-project-eureka-management/mapping-project-eureka-management.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-management/mapping-project-management.iml" filepath="$PROJECT_DIR$/mapping-project-management/mapping-project-management.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-management/mapping-project-mapper/mapping-project-mapper.iml" filepath="$PROJECT_DIR$/mapping-project-management/mapping-project-mapper/mapping-project-mapper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-management/mapping-project-model/mapping-project-model.iml" filepath="$PROJECT_DIR$/mapping-project-management/mapping-project-model/mapping-project-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-provider-management/mapping-project-provider/mapping-project-provider.iml" filepath="$PROJECT_DIR$/mapping-project-provider-management/mapping-project-provider/mapping-project-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-provider-management/mapping-project-provider-management.iml" filepath="$PROJECT_DIR$/mapping-project-provider-management/mapping-project-provider-management.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-management/mapping-project-service/mapping-project-service.iml" filepath="$PROJECT_DIR$/mapping-project-management/mapping-project-service/mapping-project-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mapping-project-zuul/mapping-project-zuul.iml" filepath="$PROJECT_DIR$/mapping-project-zuul/mapping-project-zuul.iml" />
+    </modules>
+  </component>
+</project>

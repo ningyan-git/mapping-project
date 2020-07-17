@@ -12,4 +12,12 @@
     <result column="gmt_modified" property="gmtModified" jdbcType="DATE" />
     <result column="body" property="body" jdbcType="LONGVARCHAR" />
   </resultMap>
+  <select id="selectAllNews" resultMap="BaseResultMap">
+    select * from t_news
+    <where>
+      <if test="title != null">
+        title like concat('%',#{title},'%')
+      </if>
+    </where>
+  </select>
 </mapper>

@@ -11,4 +11,18 @@
     <result column="FIELD_NAME" property="fieldName" jdbcType="VARCHAR" />
     <result column="TABLE_NAME" property="tableName" jdbcType="VARCHAR" />
   </resultMap>
+  <select id="selectAllDict" resultMap="BaseResultMap">
+    SELECT * from t_dict
+     <where>
+       <if test="tableName !=null">
+          and TABLE_NAME like concat('%',#{tableName},'%')
+       </if>
+       <if test="fieldName != null">
+         and FIELD_NAME  like concat('%',#{fieldName},'%')
+       </if>
+       <if test="keyy != null">
+         and KEYY like concat('%',#{keyy},'%')
+       </if>
+     </where>
+  </select>
 </mapper>

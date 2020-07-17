@@ -12,4 +12,12 @@
     <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
     <result column="MODIFY_TIME" property="modifyTime" jdbcType="DATE" />
   </resultMap>
+  <select id="selectAllDept" resultType="java.util.Map">
+       select * from t_dept
+       <where>
+         <if test="deptName !=null">
+           DEPT_NAME like concat('%',#{deptName},'%')
+         </if>
+       </where>
+  </select>
 </mapper>
