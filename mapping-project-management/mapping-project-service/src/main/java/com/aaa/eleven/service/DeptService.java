@@ -44,7 +44,7 @@ public class DeptService  extends BaseService<Dept> {
         // 尽量使用包装类 Boolean
         // 判断dept是不是拿到
 
-        if (dept !=null){
+        if (dept !=null &&dept.getParentId() !=null && dept.getDeptName() != null){
             int insert = deptMapper.insert(dept);
             if (insert >0){
                 return true;
@@ -64,7 +64,7 @@ public class DeptService  extends BaseService<Dept> {
      * @return
      */
     public Boolean updateDept(Dept dept){
-        if (dept !=null){
+        if (dept !=null && dept.getDeptId() !=null){
             int i = deptMapper.updateByPrimaryKey(dept);
             if (i >0){
                 return true;
@@ -82,7 +82,7 @@ public class DeptService  extends BaseService<Dept> {
      * @return
      */
     public Boolean deleteDept(Dept dept){
-        if (dept !=null) {
+        if (dept !=null&& dept.getDeptId() !=null) {
             int delete = deptMapper.delete(dept);
             if (delete >0){
                 return true;

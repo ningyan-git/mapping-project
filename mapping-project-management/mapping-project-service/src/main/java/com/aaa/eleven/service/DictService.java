@@ -49,7 +49,7 @@ public class DictService extends BaseService<Dict> {
         // 尽量使用包装类 Boolean
         // 判断dept是不是拿到
 
-        if (dict !=null){
+        if (dict !=null && dict.getValuee() !=null && dict.getTableName() !=null && dict.getKeyy()!=null && dict.getFieldName() !=null){
             int insert = dictMapper.insert(dict);
             if (insert >0){
                 return true;
@@ -69,7 +69,7 @@ public class DictService extends BaseService<Dict> {
      * @return
      */
     public Boolean updateDict(Dict dict){
-        if (dict !=null){
+        if (dict !=null && dict.getDictId() != null){
             int i = dictMapper.updateByPrimaryKey(dict);
             if (i >0){
                 return true;
@@ -87,7 +87,7 @@ public class DictService extends BaseService<Dict> {
      * @return
      */
     public Boolean deleteDict(Dict dict){
-        if (dict !=null) {
+        if (dict !=null && dict.getDictId() != null) {
             int delete = dictMapper.delete(dict);
             if (delete >0){
                 return true;

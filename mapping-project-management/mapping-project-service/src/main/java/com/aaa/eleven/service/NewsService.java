@@ -4,6 +4,7 @@ import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.mapper.NewsMapper;
 import com.aaa.eleven.model.Dict;
 import com.aaa.eleven.model.News;
+import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +46,14 @@ public class NewsService extends BaseService<News> {
      * @return
      */
     public Boolean addNews(News news){
-        // 尽量使用包装类 Boolean
         // 判断dept是不是拿到
+        String fileName = FileNameUtils.getFileName();
+        long l = Long.parseLong(fileName);
 
-        if (news !=null){
+        if (news !=null &&news.getGmtCreate() !=null && news.getTitle() != null && news.getDigest() !=null ){
+            news.setId(l);
             int insert = newsMapper.insert(news);
+
             if (insert >0){
                 return true;
             }else {
@@ -66,7 +70,7 @@ public class NewsService extends BaseService<News> {
      * @return
      */
     public Boolean updateNews(News news){
-        if (news !=null){
+        if (news !=null && news.getId() != null){
             int i = newsMapper.updateByPrimaryKey(news);
             if (i >0){
                 return true;
@@ -84,7 +88,7 @@ public class NewsService extends BaseService<News> {
      * @return
      */
     public Boolean deleteNews(News news){
-        if (news !=null) {
+        if (news !=null && news.getId() != null) {
             int delete = newsMapper.delete(news);
             if (delete >0){
                 return true;

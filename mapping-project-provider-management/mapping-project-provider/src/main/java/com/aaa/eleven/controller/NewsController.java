@@ -40,7 +40,7 @@ public class NewsController extends CommonController<News> {
     }
     @PostMapping("/addNews")
     public ResultData addNews(@RequestBody News news){
-        if (news.getTitle()==null){
+        /*if (news.getTitle()==null){
             return insertFailed("Title 必须要传参");
         }
          if (news.getDigest() ==null){
@@ -48,8 +48,11 @@ public class NewsController extends CommonController<News> {
          }
          if (news.getGmtCreate() == null){
              return insertFailed("gmtcreate 必须要传参");
-         }
+         }*/
+
+
         Boolean aBoolean = newsService.addNews(news);
+
         if (aBoolean){
             return insertSuccess(aBoolean);
         }
