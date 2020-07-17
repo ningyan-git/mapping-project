@@ -12,6 +12,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class PrincipalController extends CommonController<Principal> {
         if(null != principal){
             if(principal.getType() != null && principal.getName() != null && principal.getIdType() != null && principal.getIdNumber() != null){
                 principal.setId(Long.parseLong(FileNameUtils.getFileName()));
+                principal.setCreateTime(new Date());
                 Integer i = principalService.insert(principal);
                 if(i > 0){
                     return  insertSuccess();
@@ -95,6 +97,7 @@ public class PrincipalController extends CommonController<Principal> {
     public ResultData updatePrincipal(@RequestBody Principal principal){
         if(null != principal){
             if(principal.getId() != null){
+                principal.setModifyTime(new Date());
                 Integer i = principalService.update(principal);
                 if(i > 0){
                     return  updateSuccess();

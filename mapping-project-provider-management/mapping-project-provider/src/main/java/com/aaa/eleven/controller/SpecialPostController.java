@@ -11,6 +11,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class SpecialPostController extends CommonController<SpecialPost> {
     public ResultData insertSpecialPost(@RequestBody SpecialPost specialPost){
         if(specialPost != null){
             specialPost.setId(Long.parseLong(FileNameUtils.getFileName()));
+            specialPost.setCreateTime(new Date());
             Integer i = specialPostService.insert(specialPost);
             if(i > 0){
                 return  insertSuccess();
@@ -94,6 +96,7 @@ public class SpecialPostController extends CommonController<SpecialPost> {
     public ResultData updateSpecialPost(@RequestBody SpecialPost specialPost){
         if(specialPost != null){
           if(specialPost.getId() != null){
+              specialPost.setModifyTime(new Date());
               Integer i = specialPostService.update(specialPost);
               if(i > 0){
                   return  updateSuccess();

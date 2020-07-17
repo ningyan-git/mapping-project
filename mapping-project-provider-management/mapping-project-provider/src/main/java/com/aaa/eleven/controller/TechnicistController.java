@@ -11,6 +11,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class TechnicistController extends CommonController<Technicist> {
         if(technicist != null){
             if(technicist.getName() != null && technicist.getMajorType() != null && technicist.getIdType() != null && technicist.getIdNumber() != null){
                 technicist.setId(Long.parseLong(FileNameUtils.getFileName()));
+                technicist.setCreateTime(new Date());
                 Integer i = technicistService.insert(technicist);
                 if(i > 0){
                     return insertSuccess();
@@ -95,6 +97,7 @@ public class TechnicistController extends CommonController<Technicist> {
     public ResultData updateTechnicist(@RequestBody Technicist technicist){
         if(technicist != null){
             if(technicist.getId() != null){
+                technicist.setModifyTime(new Date());
                 Integer i = technicistService.update(technicist);
                 if(i > 0){
                     return updateSuccess();

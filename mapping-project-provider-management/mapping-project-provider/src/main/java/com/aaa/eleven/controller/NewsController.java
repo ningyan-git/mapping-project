@@ -6,6 +6,7 @@ import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.Dict;
 import com.aaa.eleven.model.News;
 import com.aaa.eleven.service.NewsService;
+import com.aaa.eleven.utils.FileNameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,15 +57,7 @@ public class NewsController extends CommonController<News> {
     }
     @RequestMapping("/updateNews")
     public ResultData updateNews(@RequestBody News news){
-        /*if (news.getTitle()==null){
-            return updateFailed("Title 必须要传参");
-        }
-        if (news.getDigest() ==null){
-            return updateFailed("digest 必须要传参");
-        }
-        if (news.getGmtCreate() == null){
-            return updateFailed("gmtcreate 必须要传参");
-        }*/
+
         Boolean aBoolean = newsService.updateNews(news);
         if (aBoolean){
             return updateSuccess(aBoolean);

@@ -58,8 +58,6 @@ public class NewsService extends BaseService<News> {
         }else {
             return false;
         }
-
-
     }
 
     /**

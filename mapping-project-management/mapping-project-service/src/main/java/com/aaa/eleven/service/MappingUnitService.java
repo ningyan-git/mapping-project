@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class MappingUnitService extends BaseService<MappingUnit> {
     public Boolean updateMappingUnit(MappingUnit mappingUnit){
         if(null != mappingUnit){
             if(null != mappingUnit.getId()){
+                mappingUnit.setModifyTime(new Date());
                 int i = mappingUnitMapper.updateByPrimaryKey(mappingUnit);
                 if(i > 0){
                     return true;
@@ -95,6 +97,7 @@ public class MappingUnitService extends BaseService<MappingUnit> {
         if(null != mappingUnit){
             if(mappingUnit.getUsedName() != null && mappingUnit.getUserId() != null){
                 mappingUnit.setId(Long.parseLong(FileNameUtils.getFileName()));
+                mappingUnit.setCreateTime(new Date());
                 int i = mappingUnitMapper.insert(mappingUnit);
                 if(i > 0){
                     return true;

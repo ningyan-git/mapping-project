@@ -48,7 +48,6 @@ public class EquipmentController {
      * @Param [equipment]
      * @return com.aaa.eleven.base.ResultData
      */
-    //todo id不能为空
     @PostMapping("/equipment/insertEquipment")
     public ResultData insertEquipment(@RequestBody Equipment equipment){
         return mappingProjectService.insertEquipment(equipment);
@@ -65,6 +64,7 @@ public class EquipmentController {
     public ResultData updateEquipment(@RequestBody Equipment equipment){
         return mappingProjectService.updateEquipment(equipment);
     }
+
     /***
      * @Author ftt
      * @Description

@@ -7,11 +7,15 @@ import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.aaa.eleven.staticproperties.TimeForatProperties.DATE_FORMAT;
 
 /**
  * @Company
@@ -73,6 +77,7 @@ public class EquipmentService extends BaseService<Equipment> {
     public Boolean insertEquipment(Equipment equipment){
         if(null != equipment){
             equipment.setId(Long.parseLong(FileNameUtils.getFileName()));
+            equipment.setCreateTime(new Date());
             int i = equipmentMapper.insert(equipment);
             if(i > 0){
                 return true;
@@ -110,6 +115,7 @@ public class EquipmentService extends BaseService<Equipment> {
     public Boolean updateEquipment(Equipment equipment){
         if(equipment != null){
             if(equipment.getId() != null){
+                equipment.setModifyTime(new Date());
                 int i = equipmentMapper.updateByPrimaryKey(equipment);
                 if(i > 0 ){
                     return  true;
