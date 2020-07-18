@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -112,5 +113,53 @@ public class MappingUnitController extends CommonController<MappingUnit> {
             return deleteFailed();
         }
 
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 黑白名单
+     * @Date 2020/7/17 17:10
+     * @Param [map]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    @GetMapping("/mappingUnit/blackAndWhitelist")
+    public ResultData blackAndWhitelist(@RequestParam Map map){
+        PageInfo<MappingUnit> pageInfo = mappingUnitService.blackAndWhitelist(map);
+        if(pageInfo != null){
+            return selectSuccess(pageInfo);
+        }
+        return selectFailed();
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 随机按照比例并且按照区抽查单位
+     * @Date 2020/7/17 17:43
+     * @Param [map]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    @GetMapping("/mappingUnit/unitSpotCheckList")
+    public ResultData unitSpotCheckList(@RequestParam Map map){
+        PageInfo<Map<String, Object>> pageInfo = mappingUnitService.unitSpotCheck(map);
+        if(pageInfo != null){
+            return selectSuccess(pageInfo);
+        }
+        return selectFailed();
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 抽查人员
+     * @Date 2020/7/17 18:24
+     * @Param [map]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    @GetMapping("/mappingUnit/selectPersonCheck")
+    public ResultData selectPersonCheck(@RequestParam Map map){
+        PageInfo<Map<String, Object>> pageInfo = mappingUnitService.selectPersonCheck(map);
+        if(pageInfo != null){
+            return selectSuccess(pageInfo);
+        }
+        return selectFailed();
     }
 }

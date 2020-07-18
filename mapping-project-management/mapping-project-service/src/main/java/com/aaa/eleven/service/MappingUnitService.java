@@ -77,6 +77,7 @@ public class MappingUnitService extends BaseService<MappingUnit> {
         if(null != mappingUnit){
             if(null != mappingUnit.getId()){
                 mappingUnit.setModifyTime(new Date());
+                System.out.println(mappingUnitMapper);
                 int i = mappingUnitMapper.updateByPrimaryKey(mappingUnit);
                 if(i > 0){
                     return true;
@@ -124,5 +125,77 @@ public class MappingUnitService extends BaseService<MappingUnit> {
             }
         }
         return  false;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 黑白名单
+     * @Date 2020/7/17 17:03
+     * @Param [status]
+     * @return java.util.List<com.aaa.eleven.model.MappingUnit>
+     */
+    public PageInfo<MappingUnit> blackAndWhitelist(Map map){
+        if(map.get("status") != null){
+            MappingUnit mappingUnit = new MappingUnit();
+            mappingUnit.setUnitStatus(Integer.parseInt(map.get("status").toString()));
+            int pageNum = Integer.parseInt(map.get("pageNum").toString());
+            int pageSize = Integer.parseInt(map.get("pageSize").toString());
+            PageHelper.startPage(pageNum,pageSize);
+            List<MappingUnit> select = mappingUnitMapper.select(mappingUnit);
+            if(select.size() > 0){
+                PageInfo<MappingUnit> pageInfo = new PageInfo<MappingUnit>(select);
+                return pageInfo;
+            }
+        }
+        return null;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 随机按照比例并且按照区抽查单位
+     * @Date 2020/7/17 17:17
+     * @Param [map]
+     * @return com.github.pagehelper.PageInfo<com.aaa.eleven.model.MappingUnit>
+     */
+    public PageInfo<Map<String, Object>> unitSpotCheck(Map map){
+        int pageNum = Integer.parseInt(map.get("pageNum").toString());
+        int pageSize = Integer.parseInt(map.get("pageSize").toString());
+        PageHelper.startPage(pageNum,pageSize);
+        float ran = Float.parseFloat(map.get("ran").toString());
+        String ownedDistrict = null;
+        if(map.get("ownedDistrict") != null){
+            ownedDistrict = map.get("ownedDistrict").toString();
+        }
+        List<Map<String, Object>> list = null;
+        if("全部单位".equals(ownedDistrict)){
+            list = mappingUnitMapper.selectunitSpotCheckByRate(ran);
+        }else {
+            list = mappingUnitMapper.selectunitSpotCheck(ran,ownedDistrict);
+        }
+        if(list != null && list.size() > 0){
+            PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
+            return pageInfo;
+        }
+        return null;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 抽查人员
+     * @Date 2020/7/17 18:22
+     * @Param [map]
+     * @return com.github.pagehelper.PageInfo<java.util.Map<java.lang.String,java.lang.Object>>
+     */
+    public PageInfo<Map<String, Object>> selectPersonCheck(Map map){
+        int pageNum = Integer.parseInt(map.get("pageNum").toString());
+        int pageSize = Integer.parseInt(map.get("pageSize").toString());
+        PageHelper.startPage(pageNum,pageSize);
+        float ran = Float.parseFloat(map.get("ran").toString());
+        List<Map<String, Object>> list = mappingUnitMapper.selectPersonCheck(ran);
+        if(list != null && list.size() > 0){
+            PageInfo<Map<String, Object>> pageInfo = new PageInfo<Map<String, Object>>(list);
+            return pageInfo;
+        }
+        return null;
     }
 }

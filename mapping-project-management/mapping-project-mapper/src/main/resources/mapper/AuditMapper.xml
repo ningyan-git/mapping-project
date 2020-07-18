@@ -16,4 +16,23 @@
     <result column="ref_id" property="refId" jdbcType="BIGINT" />
     <result column="create_time" property="createTime" jdbcType="DATE" />
   </resultMap>
+    <select id="selectMappingUnitAuditList" resultType="com.aaa.eleven.model.MappingUnit">
+      SELECT tm.* FROM `t_mapping_unit`tm,t_audit ta
+      <where>
+        tm.audit_status=2 and ta.ref_id =tm.id
+        <if test="unitName != null">
+          and
+          tm.unit_name like CONCAT('%','江城区','%')
+        </if>
+      </where>
+    </select>
+  <select id="selectAuditForUnitInfo" resultType="com.aaa.eleven.model.MappingUnit">
+    select * from t_user a
+    inner join t_mapping_unit b
+    on a.id=b.user_id
+    where a.status=0
+    <if test="unitName != null">
+      and b.unit_name=#{unitName}
+    </if>
+  </select>
 </mapper>
