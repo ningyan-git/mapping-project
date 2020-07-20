@@ -1,13 +1,18 @@
 package com.aaa.eleven.service;
 
 import com.aaa.eleven.base.BaseService;
+import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.mapper.TechnicistMapper;
 import com.aaa.eleven.model.Technicist;
+import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +66,65 @@ public class TechnicistService extends BaseService<Technicist> {
         return  null;
     }
 
-
+    /***
+     * @Author ftt
+     * @Description
+     * 新增技术人员信息
+     * @Date 2020/7/16 18:39
+     * @Param [technicist]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    public Boolean insertTechnicist(Technicist technicist){
+        if(technicist != null){
+            if(technicist.getName() != null && technicist.getMajorType() != null && technicist.getIdType() != null && technicist.getIdNumber() != null){
+                technicist.setId(Long.parseLong(FileNameUtils.getFileName()));
+                technicist.setCreateTime(new Date());
+                Integer i = insert(technicist);
+                if(i > 0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 修改技术人员信息
+     * @Date 2020/7/16 18:39
+     * @Param [technicist]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    public Boolean updateTechnicist( Technicist technicist){
+        if(technicist != null){
+            if(technicist.getId() != null){
+                technicist.setModifyTime(new Date());
+                Integer i = update(technicist);
+                if(i > 0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 删除技术人员信息
+     * @Date 2020/7/16 18:39
+     * @Param [technicist]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    public Boolean deleteTechnicist(Technicist technicist){
+        if(technicist != null){
+            if(technicist.getId() != null){
+                Integer i = delete(technicist);
+                if(i > 0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

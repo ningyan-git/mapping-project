@@ -1,13 +1,18 @@
 package com.aaa.eleven.service;
 
 import com.aaa.eleven.base.BaseService;
+import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.mapper.PrincipalMapper;
 import com.aaa.eleven.model.Principal;
+import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -62,5 +67,65 @@ public class PrincipalService extends BaseService<Principal> {
             }
         }
         return null;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 新增负责人信息
+     * @Date 2020/7/16 18:25
+     * @Param [principal]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    public Boolean insertPrincipal( Principal principal){
+        if(null != principal){
+            if(principal.getType() != null && principal.getName() != null && principal.getIdType() != null && principal.getIdNumber() != null){
+                principal.setId(Long.parseLong(FileNameUtils.getFileName()));
+                principal.setCreateTime(new Date());
+                Integer i = insert(principal);
+                if(i > 0){
+                    return  true;
+                }
+            }
+        }
+        return false;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 修改负责人信息
+     * @Date 2020/7/16 18:25
+     * @Param [principal]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    public Boolean updatePrincipal( Principal principal){
+        if(null != principal){
+            if(principal.getId() != null){
+                principal.setModifyTime(new Date());
+                Integer i = update(principal);
+                if(i > 0){
+                    return  true;
+                }
+            }
+        }
+        return false;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 删除负责人信息
+     * @Date 2020/7/16 18:25
+     * @Param [principal]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    public Boolean deletePrincipal( Principal principal){
+        if(null != principal){
+            if(principal.getId() != null){
+                Integer i = delete(principal);
+                if(i > 0){
+                    return  true;
+                }
+            }
+        }
+        return false;
     }
 }

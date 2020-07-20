@@ -4,7 +4,9 @@ import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.base.CommonController;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.MappingUnit;
+import com.aaa.eleven.service.AuditService;
 import com.aaa.eleven.service.MappingUnitService;
+import com.aaa.eleven.service.UserService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,10 @@ import java.util.Map;
 public class MappingUnitController extends CommonController<MappingUnit> {
     @Autowired
     private MappingUnitService mappingUnitService;
-
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AuditService auditService;
     @Override
     public BaseService<MappingUnit> getBaseService() {
         return mappingUnitService;
@@ -71,7 +76,7 @@ public class MappingUnitController extends CommonController<MappingUnit> {
      */
     @PostMapping("/mappingUnit/updateMappingUnit")
     public ResultData updateMappingUnit(@RequestBody MappingUnit mappingUnit){
-        Boolean flag = mappingUnitService.updateMappingUnit(mappingUnit);
+        Boolean flag = mappingUnitService.updateMappingUnit(mappingUnit,auditService);
         if(flag){
             return updateSuccess();
         }else {
@@ -83,13 +88,14 @@ public class MappingUnitController extends CommonController<MappingUnit> {
      * @Author ftt
      * @Description
      * 新增 单位信息
+     *  也就是说是注册单位信息
      * @Date 2020/7/16 16:48
      * @Param [mappingUnit]
      * @return com.aaa.eleven.base.ResultData
      */
     @PostMapping("/mappingUnit/insertMappingUnit")
     public ResultData insertMappingUnit(@RequestBody MappingUnit mappingUnit){
-        Boolean flag = mappingUnitService.insertMappingUnit(mappingUnit);
+        Boolean flag = mappingUnitService.insertMappingUnit(mappingUnit,userService,auditService);
         if(flag){
             return  insertSuccess();
         }else {

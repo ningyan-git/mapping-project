@@ -73,15 +73,9 @@ public class PrincipalController extends CommonController<Principal> {
      */
     @PostMapping("/principal/insertPrincipal")
     public ResultData insertPrincipal(@RequestBody Principal principal){
-        if(null != principal){
-            if(principal.getType() != null && principal.getName() != null && principal.getIdType() != null && principal.getIdNumber() != null){
-                principal.setId(Long.parseLong(FileNameUtils.getFileName()));
-                principal.setCreateTime(new Date());
-                Integer i = principalService.insert(principal);
-                if(i > 0){
-                    return  insertSuccess();
-                }
-            }
+        boolean i = principalService.insertPrincipal(principal);
+        if(i ){
+            return  insertSuccess();
         }
         return insertFailed();
     }
@@ -95,14 +89,9 @@ public class PrincipalController extends CommonController<Principal> {
      */
     @PostMapping("/principal/updatePrincipal")
     public ResultData updatePrincipal(@RequestBody Principal principal){
-        if(null != principal){
-            if(principal.getId() != null){
-                principal.setModifyTime(new Date());
-                Integer i = principalService.update(principal);
-                if(i > 0){
-                    return  updateSuccess();
-                }
-            }
+        Boolean i = principalService.updatePrincipal(principal);
+        if(i){
+            return  updateSuccess();
         }
         return updateFailed();
     }
@@ -116,13 +105,9 @@ public class PrincipalController extends CommonController<Principal> {
      */
     @PostMapping("/principal/deletePrincipal")
     public ResultData deletePrincipal(@RequestBody Principal principal){
-        if(null != principal){
-            if(principal.getId() != null){
-                Integer i = principalService.delete(principal);
-                if(i > 0){
-                    return  deleteSuccess();
-                }
-            }
+        Boolean i = principalService.deletePrincipal(principal);
+        if(i){
+            return  deleteSuccess();
         }
         return deleteFailed();
     }

@@ -74,13 +74,9 @@ public class SpecialPostController extends CommonController<SpecialPost> {
      */
     @PostMapping("/specialPost/insertSpecialPost")
     public ResultData insertSpecialPost(@RequestBody SpecialPost specialPost){
-        if(specialPost != null){
-            specialPost.setId(Long.parseLong(FileNameUtils.getFileName()));
-            specialPost.setCreateTime(new Date());
-            Integer i = specialPostService.insert(specialPost);
-            if(i > 0){
-                return  insertSuccess();
-            }
+        Boolean i = specialPostService.insertSpecialPost(specialPost);
+        if(i ){
+            return  insertSuccess();
         }
         return insertFailed();
     }
@@ -94,14 +90,9 @@ public class SpecialPostController extends CommonController<SpecialPost> {
      */
     @PostMapping("/specialPost/updateSpecialPost")
     public ResultData updateSpecialPost(@RequestBody SpecialPost specialPost){
-        if(specialPost != null){
-          if(specialPost.getId() != null){
-              specialPost.setModifyTime(new Date());
-              Integer i = specialPostService.update(specialPost);
-              if(i > 0){
-                  return  updateSuccess();
-              }
-          }
+        Boolean i = specialPostService.updateSpecialPost(specialPost);
+        if(i){
+            return  updateSuccess();
         }
         return updateFailed();
     }
@@ -115,13 +106,9 @@ public class SpecialPostController extends CommonController<SpecialPost> {
      */
     @PostMapping("/specialPost/deleteSpecialPost")
     public ResultData deleteSpecialPost(@RequestBody SpecialPost specialPost){
-        if(specialPost != null){
-            if(specialPost.getId() != null){
-                Integer i = specialPostService.delete(specialPost);
-                if(i > 0){
-                    return  deleteSuccess();
-                }
-            }
+        Boolean i = specialPostService.deleteSpecialPost(specialPost);
+        if(i ){
+            return  deleteSuccess();
         }
         return deleteFailed();
     }

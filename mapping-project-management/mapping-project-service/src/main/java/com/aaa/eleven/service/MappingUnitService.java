@@ -2,10 +2,13 @@ package com.aaa.eleven.service;
 
 import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.mapper.MappingUnitMapper;
+import com.aaa.eleven.model.Audit;
 import com.aaa.eleven.model.MappingUnit;
+import com.aaa.eleven.model.User;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -13,6 +16,8 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.aaa.eleven.staticproperties.TimeForatProperties.TIME_FORMAT;
 
 
 /**
@@ -69,17 +74,28 @@ public class MappingUnitService extends BaseService<MappingUnit> {
      * @Author ftt
      * @Description
      * 根据主键进行修改
+     *     修改 mappingUnit modify_time audit_status 2
+     *     新增 audit id name 单位信息审核 type 1 submit_time ref_id (mappingUnit id)
      * @Date 2020/7/16 15:41
      * @Param [mappingUnit]
      * @return java.lang.Boolean
      */
-    public Boolean updateMappingUnit(MappingUnit mappingUnit){
+    public Boolean updateMappingUnit(MappingUnit mappingUnit,AuditService auditService){
         if(null != mappingUnit){
             if(null != mappingUnit.getId()){
+                //修改mappingUnit表
                 mappingUnit.setModifyTime(new Date());
-                System.out.println(mappingUnitMapper);
-                int i = mappingUnitMapper.updateByPrimaryKey(mappingUnit);
-                if(i > 0){
+                mappingUnit.setAuditStatus(2);
+                int i1 = mappingUnitMapper.updateByPrimaryKey(mappingUnit);
+                //新增到audit表
+                Audit audit = new Audit();
+                audit.setId(Long.parseLong(FileNameUtils.getFileName()));
+                audit.setName("单位信息审核");
+                audit.setType(1);
+                audit.setSubmitTime(new Date());
+                audit.setRefId(mappingUnit.getId());
+                Integer i2 = auditService.insert(audit);
+                if(i1 > 0 && i2 > 0){
                     return true;
                 }
             }
@@ -90,17 +106,38 @@ public class MappingUnitService extends BaseService<MappingUnit> {
      * @Author ftt
      * @Description
      * 增加
+     * 注册单位信息
+     *      注册要向user、mappingUnit、audit表添加数据
+     *      user表 id username status--> 0(0锁定、1 有效) createTime type(0) token(设默认值0)
+     *      mappingunit id createTime unitName userID auditstatus 2
+     *      audit id name 单位信息审核 type 1 submit_time ref_id (user_id)
      * @Date 2020/7/16 15:42
      * @Param [mappingUnit]
      * @return java.lang.Boolean
      */
-    public Boolean insertMappingUnit(MappingUnit mappingUnit){
+    public Boolean insertMappingUnit(MappingUnit mappingUnit,UserService userService,AuditService auditService){
         if(null != mappingUnit){
-            if(mappingUnit.getUsedName() != null && mappingUnit.getUserId() != null){
+            if(mappingUnit.getUnitName() != null && mappingUnit.getUserId() != null){
+                //新增到单位表
                 mappingUnit.setId(Long.parseLong(FileNameUtils.getFileName()));
                 mappingUnit.setCreateTime(new Date());
-                int i = mappingUnitMapper.insert(mappingUnit);
-                if(i > 0){
+                int i1 = mappingUnitMapper.insert(mappingUnit);
+                //注册到user表
+                User user = new User();
+                user.setUsername(mappingUnit.getUnitName());
+                user.setStatus("0");
+                user.setCreateTime(DateUtils.formatDate(new Date(),TIME_FORMAT));
+                user.setToken("0");
+                Integer i2 = userService.insert(user);
+                //新增到审核表
+                Audit audit = new Audit();
+                audit.setId(Long.parseLong(FileNameUtils.getFileName()));
+                audit.setName("单位信息审核");
+                audit.setType(1);
+                audit.setSubmitTime(new Date());
+                audit.setRefId(user.getId());
+                Integer i3 = auditService.insert(audit);
+                if(i1 > 0 && i2 > 0 && i3 > 0){
                     return true;
                 }
             }

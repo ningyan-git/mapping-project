@@ -77,7 +77,7 @@ public class AuditService extends BaseService<Audit> {
     /***
      * @Author ftt
      * @Description
-     * 单位注册待审核
+     * 查询单位注册待审核
      * @Date 2020/7/17 20:48
      * @Param [map]
      * @return com.github.pagehelper.PageInfo
@@ -101,6 +101,9 @@ public class AuditService extends BaseService<Audit> {
      * @Author ftt
      * @Description
      * 修改单位审核状态
+     *    mappingUnit
+     *    audit_status
+     *    audit id name 单位信息审核 type 1  status audit_time refid id
      * @Date 2020/7/17 21:46
      * @Param [map]
      * @return java.lang.Boolean
@@ -120,6 +123,7 @@ public class AuditService extends BaseService<Audit> {
             audit.setRefId(id);
             audit.setId(Long.parseLong(FileNameUtils.getFileName()));
             audit.setStatus(status);
+            audit.setName("单位信息审核");
             audit.setCreateTime(new Date());
             Integer i2 = insert(audit);
             if(i1 >0 && i2 > 0){
@@ -132,6 +136,8 @@ public class AuditService extends BaseService<Audit> {
      * @Author ftt
      * @Description
      * 单位注册待审核
+     * user modifyTime  status
+     * audit id name 单位信息审核 type 1  status audit_time refid id
      * @Date 2020/7/18 8:42
      * @Param [map]
      * @return java.lang.Boolean
@@ -155,4 +161,5 @@ public class AuditService extends BaseService<Audit> {
         }
         return false;
     }
+    
 }

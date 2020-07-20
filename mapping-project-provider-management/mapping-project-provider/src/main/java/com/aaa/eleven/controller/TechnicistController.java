@@ -73,15 +73,9 @@ public class TechnicistController extends CommonController<Technicist> {
      */
     @PostMapping("/technicist/insertTechnicist")
     public ResultData insertTechnicist(@RequestBody Technicist technicist){
-        if(technicist != null){
-            if(technicist.getName() != null && technicist.getMajorType() != null && technicist.getIdType() != null && technicist.getIdNumber() != null){
-                technicist.setId(Long.parseLong(FileNameUtils.getFileName()));
-                technicist.setCreateTime(new Date());
-                Integer i = technicistService.insert(technicist);
-                if(i > 0){
-                    return insertSuccess();
-                }
-            }
+        Boolean i = technicistService.insertTechnicist(technicist);
+        if(i ){
+            return insertSuccess();
         }
         return insertFailed();
     }
@@ -95,14 +89,9 @@ public class TechnicistController extends CommonController<Technicist> {
      */
     @PostMapping("/technicist/updateTechnicist")
     public ResultData updateTechnicist(@RequestBody Technicist technicist){
-        if(technicist != null){
-            if(technicist.getId() != null){
-                technicist.setModifyTime(new Date());
-                Integer i = technicistService.update(technicist);
-                if(i > 0){
-                    return updateSuccess();
-                }
-            }
+        Boolean i = technicistService.updateTechnicist(technicist);
+        if(i){
+            return updateSuccess();
         }
         return updateFailed();
     }
@@ -116,13 +105,9 @@ public class TechnicistController extends CommonController<Technicist> {
      */
     @PostMapping("/technicist/deleteTechnicist")
     public ResultData deleteTechnicist(@RequestBody Technicist technicist){
-        if(technicist != null){
-            if(technicist.getId() != null){
-                Integer i = technicistService.delete(technicist);
-                if(i > 0){
-                    return deleteSuccess();
-                }
-            }
+        Boolean i = technicistService.deleteTechnicist(technicist);
+        if(i){
+            return deleteSuccess();
         }
         return deleteFailed();
     }
