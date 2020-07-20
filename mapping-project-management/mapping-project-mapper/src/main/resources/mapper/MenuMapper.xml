@@ -17,4 +17,27 @@
     <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
     <result column="MODIFY_TIME" property="modifyTime" jdbcType="DATE" />
   </resultMap>
+  <select id="selectMenu" resultType="java.util.Map">
+    select * from t_menu
+    <where>
+      <if test="menuName != null">
+        and menu_name=#{menuName}
+      </if>
+      <if test="startTime != null and endTime ">
+        and create_time between  #{startTime} and #{endTime}
+      </if>
+      <if test="menuName ==null and startTime == null and endTime == null ">
+        and parent_id=0
+      </if>
+    </where>
+  </select>
+  <select id="selectMasterNode" resultMap="BaseResultMap">
+    select * from t_menu where parent_id=0
+  </select>
+  <select id="selectChildNode" resultMap="BaseResultMap" parameterType="Integer">
+    select * from t_menu where parent_id=#{menuId}
+  </select>
+  <select id="selectParentMenu" resultType="java.util.Map">
+    select * from t_menu where menu_id= #{parentId}
+  </select>
 </mapper>

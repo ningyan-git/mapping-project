@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.aaa.eleven.status.Status.SELECT_FAILED;
+import static com.aaa.eleven.status.Status.SELECT_SUCCESS;
+
 
 /**
  * @Company
@@ -167,5 +170,68 @@ public class MappingUnitController extends CommonController<MappingUnit> {
             return selectSuccess(pageInfo);
         }
         return selectFailed();
+    }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 主页的模糊查询
+     * @Param:
+     * @Return:
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:08
+     */
+    @GetMapping("/selectByUnitNameAndOwnedDistrictAndQualificationLevel")
+    public ResultData selectByUnitNameAndOwnedDistrictAndQualificationLevel(String unitName,String ownedDistrict,String qualificationLevel){
+        List<Map<String, Object>> maps = mappingUnitService.selectByUnitNameAndOwnedDistrictAndQualificationLevel(unitName, ownedDistrict, qualificationLevel);
+        if(maps.size()>0)
+        {
+            return super.selectSuccess(SELECT_SUCCESS.getMsg(),maps);
+        }
+        else
+        {
+            return super.selectFailed(SELECT_FAILED.getMsg());
+        }
+    }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 模糊查询的下拉框数据  单位资质
+     * @Param: []
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:40
+     */
+    @PostMapping("/selectMappingUnitQualificationLevel")
+    public ResultData selectMappingUnitQualificationLevel(){
+        List<Map<String, Object>> maps = mappingUnitService.selectMappingUnitQualificationLevel();
+        if (maps.size()>0)
+        {
+            return super.selectSuccess(SELECT_SUCCESS.getMsg(),maps);
+        }
+        else
+        {
+            return super.selectFailed(SELECT_FAILED.getMsg());
+        }
+    }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 模糊查询的下拉框数据  单位地域
+     * @Param: []
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:44
+     */
+    @PostMapping("/selectMappingUnitOwnedDistrict")
+    public ResultData selectMappingUnitOwnedDistrict(){
+        List<Map<String, Object>> maps = mappingUnitService.selectMappingUnitOwnedDistrict();
+        if(maps.size()>0)
+        {
+            return super.selectSuccess(SELECT_SUCCESS.getMsg(),maps);
+        }
+        else
+        {
+            return super.selectFailed(SELECT_FAILED.getMsg());
+        }
     }
 }

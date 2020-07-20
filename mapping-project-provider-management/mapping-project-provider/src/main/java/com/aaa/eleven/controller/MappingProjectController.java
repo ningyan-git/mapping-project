@@ -5,11 +5,15 @@ import com.aaa.eleven.base.CommonController;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.MappingProject;
 import com.aaa.eleven.service.MappingProjectService;
+import com.aaa.eleven.vo.MappingProjectAndResultCommitVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+
+import static com.aaa.eleven.status.Status.*;
 
 /**
  * @Company
@@ -21,6 +25,7 @@ import java.util.Map;
 public class MappingProjectController extends CommonController<MappingProject> {
     @Autowired
     private MappingProjectService mappingProjectService;
+    @Override
     public BaseService<MappingProject> getBaseService() {
         return mappingProjectService;
     }
@@ -41,72 +46,190 @@ public class MappingProjectController extends CommonController<MappingProject> {
             return selectFailed();
         }
     }
-    /***
-     * @Author ftt
-     * @Description
-     * 根据userid查询项目 + 项目类型
-     * @Date 2020/7/18 10:20
-     * @Param [map]
-     * @return com.aaa.eleven.base.ResultData
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 项目管理的操作
+     * @Param:
+     * @Return:
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:57
      */
-    @GetMapping("/mappingProject/selectByUserId")
-    public ResultData selectByUserId(@RequestParam Map map){
-        PageInfo<MappingProject> pageInfo = mappingProjectService.selectByUserId(map);
-        if(null != pageInfo){
-            return selectSuccess(pageInfo);
-        }else {
-            return selectFailed();
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 查询t_mapping_project表 项目管理
+     * @Param: [projectType]
+     * @Return: com.github.pagehelper.PageInfo
+     * @Author: zh
+     * @Date: 2020/7/16 0016 11:06
+     */
+    @GetMapping("/getMappingProject")
+    public ResultData getMappingProject(@RequestParam(value = "pageNo",defaultValue = "1") Integer pageNo, @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize, String projectType){
+        PageInfo query = mappingProjectService.query(pageNo, pageSize, projectType);
+        if(query != null)
+        {
+            return selectSuccess(SELECT_SUCCESS.getMsg(),query);
+        }else
+        {
+            return selectFailed(SELECT_FAILED.getMsg());
+        }
+    }/**
+     * 功能描述: <br>
+     *@Description
+     * 获取条件查询的下拉框的数据
+     * @Param: []
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/16 0016 18:27
+     */
+    @GetMapping("/queryAllProject_type")
+    public ResultData queryAllProject_type(){
+        List<Map> list = mappingProjectService.queryAllProject_Type();
+        System.out.println(list);
+        if(list.size()>0)
+        {
+            return super.selectSuccess(SELECT_SUCCESS.getMsg(),list);
+        }
+        return super.selectFailed(SELECT_FAILED.getMsg());
+    }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 修改项目管理中的数据
+     * @Param: [mappingProject]
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/16 0016 18:35
+     */
+    @PutMapping("/updateMappingProject")
+    public ResultData updateMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
+        System.out.println(mappingProjectAndResultCommitVo);
+        List list = mappingProjectService.updateMappingProjectById(mappingProjectAndResultCommitVo);
+        if(list.size()==2)
+        {
+            return super.updateSuccess(UPDATE_SUCCESS.getMsg());
+        }else
+        {
+            super.updateFailed(UPDATE_FAILED.getMsg());
+        }
+        return null;
+    }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 增加项目管理
+     * @Param: [mappingProjectAndResultCommitVo]
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/17 0017 8:52
+     */
+    @PostMapping("/insertMappingProject")
+    public ResultData insertMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
+        System.out.println(mappingProjectAndResultCommitVo);
+        List list = mappingProjectService.insertMappingProjectAndResultCommit(mappingProjectAndResultCommitVo);
+        if(list.size() == 2)
+        {
+            return super.insertSuccess(INSERT_SUCCESS.getMsg());
+        }else{
+            return super.insertFailed(INSERT_FAILED.getMsg());
         }
     }
-    /***
-     * @Author ftt
-     * @Description
-     * 新增mappingProject
-     * @Date 2020/7/18 10:31
-     * @Param [mappingProject]
-     * @return com.aaa.eleven.base.ResultData
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 删除t_mapping_project并把关联的t_result_commit的数据删掉
+     * @Param: [id]
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/16 0016 21:11
      */
-    @PostMapping("/mappingProject/insertMappingProject")
-    public ResultData insertMappingProject(@RequestBody MappingProject mappingProject){
-        Boolean flag = mappingProjectService.insertMappingProject(mappingProject);
-        if(flag){
-            return insertSuccess();
-        }else {
-            return insertFailed();
+    @DeleteMapping("deleteMappingProjectAndResult")
+    public ResultData deleteMappingProjectAndResult(Long id){
+        List list = mappingProjectService.deleteMappingProjectAndResult(id);
+        if(list.size()>2)
+        {
+            return super.deleteSuccess(DELETE_SUCCESS.getMsg());
+        }
+        else
+        {
+            return super.deleteFailed(DELETE_FAILED.getMsg());
         }
     }
-    /***
-     * @Author ftt
-     * @Description
-     * 修改mappingProject
-     * @Date 2020/7/18 10:31
-     * @Param [mappingProject]
-     * @return com.aaa.eleven.base.ResultData
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 以下是主页里的模糊查询
+     * @Param:
+     * @Return:
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:57
      */
-    @PostMapping("/mappingProject/updateMappingProject")
-    public ResultData updateMappingProject(@RequestBody MappingProject mappingProject){
-        Boolean flag = mappingProjectService.updateMappingProject(mappingProject);
-        if(flag){
-            return updateSuccess();
-        }else {
-            return updateFailed();
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 模糊查询
+     * @Param: []
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/17 0017 11:14
+     */
+    @GetMapping("/selectMappingProjectByProjectNameAndProjectTypeAndStartDate")
+    public ResultData selectMappingProjectByProjectNameAndProjectTypeAndStartDate(String projectName,String projectType,String startDate){
+        List<Map<String, Object>> maps = mappingProjectService.selectMappingProjectByProjectNameAndProjectTypeAndStartDate(projectName, projectType, startDate);
+        if(maps.size()>0)
+        {
+            return super.selectSuccess(SELECT_SUCCESS.getMsg(),maps);
+        }
+        return super.selectFailed(SELECT_FAILED.getMsg());
+    }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 模糊查询中下拉框的数据  测绘类型
+     * @Param: []
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/17 0017 14:56
+     */
+    @GetMapping("/selectProjectType")
+    public ResultData selectProjectType(){
+        List<Map<String, Object>> maps = mappingProjectService.selectProjectType();
+        if(maps.size()>0)
+        {
+            return super.selectSuccess(SELECT_SUCCESS.getMsg(),maps);
+        }
+        else
+        {
+            return super.selectFailed(SELECT_FAILED.getMsg());
         }
     }
-    /***
-     * @Author ftt
-     * @Description
-     * 删除mappingProject
-     * @Date 2020/7/18 10:31
-     * @Param [mappingProject]
-     * @return com.aaa.eleven.base.ResultData
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 模糊查询之后获得项目的名称  然后通过名称获取具体信息
+     * @Param: [mappingProject]
+     * @Return: com.aaa.eleven.base.ResultData
+     * @Author: zh
+     * @Date: 2020/7/17 0017 15:15
      */
-    @PostMapping("/mappingProject/deleteMappingProject")
-    public ResultData deleteMappingProject(@RequestBody MappingProject mappingProject){
-        Boolean flag = mappingProjectService.deleteMappingProject(mappingProject);
-        if(flag){
-            return deleteSuccess();
-        }else {
-            return deleteFailed();
+    @GetMapping("/selectMappingProjectByProjectName")
+    public ResultData selectMappingProjectByProjectName(MappingProject mappingProject) {
+        /*
+         * 功能描述: <br>
+         *@Description
+         * 这边由于数据库有的名字有两个 所以查出来的结果是列表
+         * @Param: [mappingProject]
+         * @Return: com.aaa.eleven.base.ResultData
+         * @Author: zh
+         * @Date: 2020/7/17 0017 15:16
+         */
+        List<MappingProject> mappingProjects = mappingProjectService.selectList(mappingProject);
+        if (mappingProjects.size() > 0) {
+            return super.selectSuccess(SELECT_SUCCESS.getMsg(), mappingProjects);
+        } else {
+            return null;
         }
     }
+
 }

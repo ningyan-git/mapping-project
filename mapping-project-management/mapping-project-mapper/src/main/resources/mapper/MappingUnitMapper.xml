@@ -67,5 +67,20 @@
       </if>
     </where>
   </select>
+    <select id="selectByUnitNameAndOwnedDistrictAndQualificationLevel" resultType="java.util.Map">
+      select unit_name from t_mapping_unit
+      <where>
+        <if test="unitName != null">
+          and unit_name like concat('%',#{unitName},'%')
+        </if>
+        <if test="ownedDistrict != null">
+          and owned_district=#{ownedDistrict}
+        </if>
+        <if test="qualificationLevel != null">
+          and qualification_level=#{qualificationLevel}
+        </if>
+      </where>
+
+    </select>
 
 </mapper>

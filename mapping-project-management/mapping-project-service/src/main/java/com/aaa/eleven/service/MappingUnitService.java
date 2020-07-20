@@ -235,4 +235,53 @@ public class MappingUnitService extends BaseService<MappingUnit> {
         }
         return null;
     }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 主页的模糊查询
+     * @Param:
+     * @Return:
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:05
+     */
+    public List<Map<String,Object>> selectByUnitNameAndOwnedDistrictAndQualificationLevel(String unitName,String ownedDistrict,String qualificationLevel ){
+        return mappingUnitMapper.selectByUnitNameAndOwnedDistrictAndQualificationLevel(unitName, ownedDistrict, qualificationLevel);
+    }
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 模糊查询的下拉框数据  单位资质
+     * @Param: 1
+     * @Return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:34
+     */
+    public List<Map<String,Object>> selectMappingUnitQualificationLevel(){
+        List<Map<String, Object>> maps = mappingUnitMapper.selectMappingUnitQualificationLevel();
+        if(maps.size()>0)
+        {
+            return maps;
+        }
+        return null;
+    };
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 模糊查询的下拉框数据 单位地域
+     * @Param: []
+     * @Return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:35
+     */
+    public List<Map<String,Object>> selectMappingUnitOwnedDistrict(){
+        List<Map<String, Object>> maps = mappingUnitMapper.selectMappingUnitOwnedDistrict();
+        if(maps.size()>0)
+        {
+            return maps;
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

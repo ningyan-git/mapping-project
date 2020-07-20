@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.aaa.eleven.mapper.ResultommitMapper" >
-  <resultMap id="BaseResultMap" type="com.aaa.eleven.model.Resultommit" >
+<mapper namespace="com.aaa.eleven.mapper.ResultCommitMapper" >
+  <resultMap id="BaseResultMap" type="com.aaa.eleven.model.ResultCommit" >
     <!--
       WARNING - @mbg.generated
     -->
@@ -21,4 +21,17 @@
     <result column="meridian" property="meridian" jdbcType="VARCHAR" />
     <result column="coordinate" property="coordinate" jdbcType="LONGVARCHAR" />
   </resultMap>
+  <select id="selectNameAndProjectTypeAndResultDate" resultType="java.util.Map">
+    select tc.name from t_mapping_project tp,t_result_commit tc where tp.id=tc.ref_id
+
+    <if test=" name != null">
+      and tc.name like concat('%',#{name},'%')
+    </if>
+    <if test="projectType != null">
+      and tp.project_type=#{projectType}
+    </if>
+    <if test="resultDate != null">
+      and tc.result_date=#{resultDate}
+    </if>
+  </select>
 </mapper>

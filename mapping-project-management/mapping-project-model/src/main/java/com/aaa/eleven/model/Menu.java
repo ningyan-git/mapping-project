@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 @Table(name = "t_menu")
 @Data
@@ -81,4 +82,9 @@ public class Menu implements Serializable {
      */
     @Column(name = "MODIFY_TIME")
     private Date modifyTime;
+
+    private List<Menu> subMenuSecond;
+
+
+    private List<Menu> subMenuThird;
 }

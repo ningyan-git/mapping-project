@@ -49,5 +49,25 @@
     <result column="contract_time" property="contractTime" jdbcType="VARCHAR" />
     <result column="coordinate" property="coordinate" jdbcType="LONGVARCHAR" />
   </resultMap>
+  <select resultType="map" id="query">
+    select * from t_mapping_project tp,t_result_commit tc where tp.id=tc.ref_id
+    <if test="project_type!=null and project_type!=''">
+      and tp.project_type=#{project_type}
+    </if>
+  </select>
+  <select id="selectMappingProjectByProjectNameAndProjectTypeAndStartDate" resultType="java.util.Map">
+    select project_name from t_mapping_project
+    <where>
+      <if test="projectName != null">
+        and project_name like concat('%',#{projectName},'%')
+      </if>
+      <if test="projectType != null">
+        and project_type=#{projectType}
+      </if>
+      <if test="startDate != null">
+        and start_date=#{startDate}
+      </if>
+    </where>
+  </select>
 
 </mapper>

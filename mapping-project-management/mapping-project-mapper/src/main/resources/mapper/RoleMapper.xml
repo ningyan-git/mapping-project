@@ -11,4 +11,24 @@
     <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
     <result column="MODIFY_TIME" property="modifyTime" jdbcType="DATE" />
   </resultMap>
+  <select id="selectAllRoleByCondition" resultType="java.util.Map">
+    select * from t_role
+    <where>
+      <if test="roleName != null">
+        and role_name = #{roleName}
+      </if>
+      <if test="startTime != null and endTime != null">
+        and create_time between #{startTime} and #{endTime}
+      </if>
+    </where>
+  </select>
+
+
+  <delete id="deleteRoleById">
+    delete from t_role where role_id=#{roleId}
+  </delete>
+
+  <delete id="deleteMenuRoleByRoleId" >
+    delete from t_role_menu where ROLE_ID=#{roleId}
+  </delete>
 </mapper>

@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class Resultommit implements Serializable {
+public class ResultCommit implements Serializable {
     /**
      * 编号
      */

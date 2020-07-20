@@ -61,4 +61,37 @@ public interface MappingUnitMapper extends Mapper<MappingUnit> {
      */
     @Select("select @rownum:=@rownum+1,t_check_person.* from (select @rownum:=0) row ,t_check_person where @rownum<(select round(count(1)*#{ran}) from t_check_person)   order by rand()")
     List<Map<String,Object>> selectPersonCheck(@Param("ran") double ran);
+
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 主页的模糊查询
+     * @Param: [unitName, ownedDistrict, qualificationLevel]
+     * @Return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:23
+     */
+    List<Map<String,Object>> selectByUnitNameAndOwnedDistrictAndQualificationLevel(@Param("unitName") String unitName,@Param("ownedDistrict") String ownedDistrict,@Param("qualificationLevel") String qualificationLevel);
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 获取下拉框的数据 单位资质
+     * @Param:
+     * @Return:
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:24
+     */
+    @Select("SELECT * from (SELECT qualification_level from t_mapping_unit GROUP BY qualification_level) t ORDER BY t.qualification_level desc ")
+    List<Map<String,Object>> selectMappingUnitQualificationLevel();
+    /**
+     * 功能描述: <br>
+     *@Description
+     * 获取下拉框数据  单位地域
+     * @Param: []
+     * @Return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @Author: zh
+     * @Date: 2020/7/17 0017 10:33
+     */
+    @Select("SELECT owned_district from t_mapping_unit GROUP BY owned_district")
+    List<Map<String,Object>> selectMappingUnitOwnedDistrict();
 }
