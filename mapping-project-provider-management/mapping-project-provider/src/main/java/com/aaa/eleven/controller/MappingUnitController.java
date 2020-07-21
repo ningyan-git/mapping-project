@@ -62,7 +62,7 @@ public class MappingUnitController extends CommonController<MappingUnit> {
      * @Param [userId]
      * @return com.aaa.eleven.base.ResultData
      */
-    @GetMapping("/mappingUnit/selectOneByUserId")
+    @GetMapping("/mappingUnit/selectOneById")
     public ResultData selectOneById(@RequestParam("id") long id){
         MappingUnit mappingUnit = mappingUnitService.selectOneById(id);
         if(null !=mappingUnit){
