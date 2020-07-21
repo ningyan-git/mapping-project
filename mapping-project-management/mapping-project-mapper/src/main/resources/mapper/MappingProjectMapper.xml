@@ -69,5 +69,32 @@
       </if>
     </where>
   </select>
+  <select id="selectAllMappingProject" resultMap="BaseResultMap">
+    select * from t_mapping_project where project_name like concat('%',#{projectName},'%')
+  </select>
+  <select id="selectResource" resultType="java.util.Map">
+    select * from t_resource where ref_biz_id = #{id}
+  </select>
+  <select id="selectResult" resultType="java.util.Map">
+    select * from t_result_commit where ref_id = #{id}
+  </select>
+  <select id="selectResultZeroPass" resultType="java.util.Map">
+    select * from t_mapping_project where results_status = 0
+    <if test="!''.equals(projectName)">
+      and project_name like concat('%',#{projectName},'%')
+    </if>
+  </select>
+  <select id="selectAuditCommit" resultType="java.util.Map">
+    select * from t_mapping_project where audit_status=2
+    <if test="!''.equals(projectName)">
+      and project_name like concat('%',#{projectName},'%')
+    </if>
+  </select>
 
+  <select id="selectAuditResult" resultType="java.util.Map">
+    select * from t_mapping_project where results_status=2
+    <if test="!''.equals(projectName)">
+      and project_name like concat('%',#{projectName},'%')
+    </if>
+  </select>
 </mapper>

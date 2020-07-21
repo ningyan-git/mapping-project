@@ -3,6 +3,7 @@ package com.aaa.eleven.service;
 import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.mapper.SpecialPostMapper;
+import com.aaa.eleven.model.MappingUnit;
 import com.aaa.eleven.model.SpecialPost;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
@@ -73,13 +74,21 @@ public class SpecialPostService extends BaseService<SpecialPost> {
      * @Param [specialPost]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean insertSpecialPost( SpecialPost specialPost){
+    public Boolean insertSpecialPost( SpecialPost specialPost,MappingUnitService mappingUnitService){
         if(specialPost != null){
             specialPost.setId(Long.parseLong(FileNameUtils.getFileName()));
             specialPost.setCreateTime(new Date());
+            //新增
             Integer i = insert(specialPost);
-            if(i > 0){
-                return  true;
+            if(specialPost.getUserId() != null) {
+                //修改mappingUnit表的auditstatus为3 未提交
+                MappingUnit mappingUnit = new MappingUnit();
+                mappingUnit.setUserId(specialPost.getUserId());
+                mappingUnit.setAuditStatus(3);
+                Integer i1 = mappingUnitService.update(mappingUnit);
+                if (i > 0 && i1 > 0) {
+                    return true;
+                }
             }
         }
         return false;
@@ -92,13 +101,20 @@ public class SpecialPostService extends BaseService<SpecialPost> {
      * @Param [specialPost]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean updateSpecialPost(SpecialPost specialPost){
+    public Boolean updateSpecialPost(SpecialPost specialPost,MappingUnitService mappingUnitService){
         if(specialPost != null){
             if(specialPost.getId() != null){
                 specialPost.setModifyTime(new Date());
                 Integer i = update(specialPost);
-                if(i > 0){
-                    return  true;
+                if(specialPost.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(specialPost.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -112,12 +128,20 @@ public class SpecialPostService extends BaseService<SpecialPost> {
      * @Param [specialPost]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean deleteSpecialPost(SpecialPost specialPost){
+    public Boolean deleteSpecialPost(SpecialPost specialPost,MappingUnitService mappingUnitService){
         if(specialPost != null){
             if(specialPost.getId() != null){
+                //删除
                 Integer i = delete(specialPost);
-                if(i > 0){
-                    return  true;
+                if(specialPost.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(specialPost.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }

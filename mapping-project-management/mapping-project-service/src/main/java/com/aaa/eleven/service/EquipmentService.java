@@ -3,6 +3,7 @@ package com.aaa.eleven.service;
 import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.mapper.EquipmentMapper;
 import com.aaa.eleven.model.Equipment;
+import com.aaa.eleven.model.MappingUnit;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -74,13 +75,21 @@ public class EquipmentService extends BaseService<Equipment> {
      * @Param [equipment]
      * @return java.lang.Boolean
      */
-    public Boolean insertEquipment(Equipment equipment){
+    public Boolean insertEquipment(Equipment equipment,MappingUnitService mappingUnitService){
         if(null != equipment){
+            //新增设备
             equipment.setId(Long.parseLong(FileNameUtils.getFileName()));
             equipment.setCreateTime(new Date());
             int i = equipmentMapper.insert(equipment);
-            if(i > 0){
-                return true;
+            if(equipment.getUserId() != null){
+                //修改mappingUnit表的auditstatus为3 未提交
+                MappingUnit mappingUnit = new MappingUnit();
+                mappingUnit.setUserId(equipment.getUserId());
+                mappingUnit.setAuditStatus(3);
+                Integer i1 = mappingUnitService.update(mappingUnit);
+                if(i > 0 && i1 > 0){
+                    return true;
+                }
             }
         }
         return false;
@@ -93,12 +102,20 @@ public class EquipmentService extends BaseService<Equipment> {
      * @Param [equipment]
      * @return java.lang.Boolean
      */
-    public  Boolean deleteEquipment(Equipment equipment){
+    public  Boolean deleteEquipment(Equipment equipment,MappingUnitService mappingUnitService){
         if(equipment != null){
             if(equipment.getId() != null) {
+                //删除设备
                 int i = delete(equipment);
-                if (i > 0) {
-                    return true;
+                if(equipment.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(equipment.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -112,13 +129,20 @@ public class EquipmentService extends BaseService<Equipment> {
      * @Param [equipment]
      * @return java.lang.Boolean
      */
-    public Boolean updateEquipment(Equipment equipment){
+    public Boolean updateEquipment(Equipment equipment,MappingUnitService mappingUnitService){
         if(equipment != null){
             if(equipment.getId() != null){
                 equipment.setModifyTime(new Date());
                 int i = equipmentMapper.updateByPrimaryKey(equipment);
-                if(i > 0 ){
-                    return  true;
+                if(equipment.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(equipment.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }

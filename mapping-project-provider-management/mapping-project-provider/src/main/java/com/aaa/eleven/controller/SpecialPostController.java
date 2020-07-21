@@ -5,6 +5,7 @@ import com.aaa.eleven.base.CommonController;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.MappingUnit;
 import com.aaa.eleven.model.SpecialPost;
+import com.aaa.eleven.service.MappingUnitService;
 import com.aaa.eleven.service.SpecialPostService;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageInfo;
@@ -25,6 +26,8 @@ import java.util.Map;
 public class SpecialPostController extends CommonController<SpecialPost> {
     @Autowired
     private SpecialPostService specialPostService;
+    @Autowired
+    private MappingUnitService mappingUnitService;
     @Override
     public BaseService<SpecialPost> getBaseService() {
         return specialPostService;
@@ -74,7 +77,7 @@ public class SpecialPostController extends CommonController<SpecialPost> {
      */
     @PostMapping("/specialPost/insertSpecialPost")
     public ResultData insertSpecialPost(@RequestBody SpecialPost specialPost){
-        Boolean i = specialPostService.insertSpecialPost(specialPost);
+        Boolean i = specialPostService.insertSpecialPost(specialPost,mappingUnitService);
         if(i ){
             return  insertSuccess();
         }
@@ -90,7 +93,7 @@ public class SpecialPostController extends CommonController<SpecialPost> {
      */
     @PostMapping("/specialPost/updateSpecialPost")
     public ResultData updateSpecialPost(@RequestBody SpecialPost specialPost){
-        Boolean i = specialPostService.updateSpecialPost(specialPost);
+        Boolean i = specialPostService.updateSpecialPost(specialPost,mappingUnitService);
         if(i){
             return  updateSuccess();
         }
@@ -106,7 +109,7 @@ public class SpecialPostController extends CommonController<SpecialPost> {
      */
     @PostMapping("/specialPost/deleteSpecialPost")
     public ResultData deleteSpecialPost(@RequestBody SpecialPost specialPost){
-        Boolean i = specialPostService.deleteSpecialPost(specialPost);
+        Boolean i = specialPostService.deleteSpecialPost(specialPost,mappingUnitService);
         if(i ){
             return  deleteSuccess();
         }

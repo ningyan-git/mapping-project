@@ -1,20 +1,25 @@
 package com.aaa.eleven.service;
 
 import com.aaa.eleven.base.BaseService;
+import com.aaa.eleven.ftp.UploadService;
 import com.aaa.eleven.mapper.ScoreMapper;
+import com.aaa.eleven.model.FtpFile;
 import com.aaa.eleven.model.MappingUnit;
 import com.aaa.eleven.model.Resource;
 import com.aaa.eleven.model.Score;
+import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.aaa.eleven.staticproperties.RedisProperties.POINT;
 import static com.aaa.eleven.staticproperties.ScoreProperties.*;
 
 
@@ -57,7 +62,7 @@ public class ScoreService extends BaseService<Score> {
      * mapping-unit id -->score字段
      * resource
      */
-    public Boolean updateScore(Map map,ResourceService resourceService,MappingUnitService mappingUnitService){
+    public Boolean updateScore(Map map, MultipartFile file, String fileName, UploadService uploadService, ResourceService resourceService, MappingUnitService mappingUnitService){
         if(map.get("unit_id") != null){
             long id = Long.parseLong(map.get("unit_id").toString());
             //对象
@@ -97,11 +102,20 @@ public class ScoreService extends BaseService<Score> {
                 mappingUnit.setUnitStatus(3);
             }
             Integer i2 = mappingUnitService.update(mappingUnit);
+            Resource resource1 = new Resource();
+            //文件上传
+            if(file != null && fileName != null){
+                FtpFile ftpFile = uploadService.upload(file, fileName);
+                resource1.setId(Long.parseLong(FileNameUtils.getFileName()));
+                resource1.setRefBizId(id);
+                resource1.setRefBizType("附件");
+                resource1.setPath(ftpFile.getFilePath());
+                resource1.setCreateTime(new Date());
+                resource1.setName(ftpFile.getFileName());
+                resource1.setExtName(ftpFile.getFileName().substring(ftpFile.getFileName().lastIndexOf(POINT)));
+            }
             //新增resource表
-            Resource resource = new Resource();
-            resource.setRefBizId(id);
-            //todo 新增附件
-            Integer i3 = resourceService.insert(resource);
+            resourceService.insert(resource1);
             if(i1 > 0 && i2 > 0){
                 return true;
             }

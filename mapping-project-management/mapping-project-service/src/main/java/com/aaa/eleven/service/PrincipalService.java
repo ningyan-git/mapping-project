@@ -3,6 +3,7 @@ package com.aaa.eleven.service;
 import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.mapper.PrincipalMapper;
+import com.aaa.eleven.model.MappingUnit;
 import com.aaa.eleven.model.Principal;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
@@ -76,14 +77,22 @@ public class PrincipalService extends BaseService<Principal> {
      * @Param [principal]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean insertPrincipal( Principal principal){
+    public Boolean insertPrincipal( Principal principal,MappingUnitService mappingUnitService){
         if(null != principal){
             if(principal.getType() != null && principal.getName() != null && principal.getIdType() != null && principal.getIdNumber() != null){
                 principal.setId(Long.parseLong(FileNameUtils.getFileName()));
                 principal.setCreateTime(new Date());
+                // 新增 负责人信息
                 Integer i = insert(principal);
-                if(i > 0){
-                    return  true;
+                if(principal.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(principal.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -97,13 +106,21 @@ public class PrincipalService extends BaseService<Principal> {
      * @Param [principal]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean updatePrincipal( Principal principal){
+    public Boolean updatePrincipal( Principal principal,MappingUnitService mappingUnitService){
         if(null != principal){
             if(principal.getId() != null){
+                //修改负责人信息
                 principal.setModifyTime(new Date());
                 Integer i = update(principal);
-                if(i > 0){
-                    return  true;
+                if(principal.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(principal.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -117,12 +134,20 @@ public class PrincipalService extends BaseService<Principal> {
      * @Param [principal]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean deletePrincipal( Principal principal){
+    public Boolean deletePrincipal( Principal principal,MappingUnitService mappingUnitService){
         if(null != principal){
             if(principal.getId() != null){
+                //删除负责人信息
                 Integer i = delete(principal);
-                if(i > 0){
-                    return  true;
+                if(principal.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(principal.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }

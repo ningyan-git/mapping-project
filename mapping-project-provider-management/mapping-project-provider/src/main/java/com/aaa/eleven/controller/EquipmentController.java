@@ -6,6 +6,7 @@ import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.Equipment;
 import com.aaa.eleven.model.Technicist;
 import com.aaa.eleven.service.EquipmentService;
+import com.aaa.eleven.service.MappingUnitService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,8 @@ import java.util.Map;
 public class EquipmentController extends CommonController<Equipment> {
     @Autowired
     private EquipmentService equipmentService;
+    @Autowired
+    private MappingUnitService mappingUnitService;
     @Override
     public BaseService<Equipment> getBaseService() {
         return equipmentService;
@@ -72,7 +75,7 @@ public class EquipmentController extends CommonController<Equipment> {
      */
     @PostMapping("/equipment/insertEquipment")
     public ResultData insertEquipment(@RequestBody Equipment equipment){
-        Boolean flag = equipmentService.insertEquipment(equipment);
+        Boolean flag = equipmentService.insertEquipment(equipment,mappingUnitService);
         if(flag){
             return insertSuccess();
         }else {
@@ -89,7 +92,7 @@ public class EquipmentController extends CommonController<Equipment> {
      */
     @PostMapping("/equipment/updateEquipment")
     public ResultData updateEquipment(@RequestBody Equipment equipment){
-        Boolean flag = equipmentService.updateEquipment(equipment);
+        Boolean flag = equipmentService.updateEquipment(equipment, mappingUnitService);
         if(flag){
             return updateSuccess();
         }else {
@@ -106,7 +109,7 @@ public class EquipmentController extends CommonController<Equipment> {
      */
     @PostMapping("/equipment/deleteEquipment")
     public ResultData deleteEquipment(@RequestBody Equipment equipment){
-        Boolean flag = equipmentService.deleteEquipment(equipment);
+        Boolean flag = equipmentService.deleteEquipment(equipment,mappingUnitService);
         if(flag){
             return deleteSuccess();
         }else {

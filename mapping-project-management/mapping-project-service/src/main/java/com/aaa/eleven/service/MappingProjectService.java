@@ -1,19 +1,25 @@
 package com.aaa.eleven.service;
 
 import com.aaa.eleven.base.BaseService;
+import com.aaa.eleven.ftp.UploadService;
 import com.aaa.eleven.mapper.AuditMapper;
 import com.aaa.eleven.mapper.MappingProjectMapper;
 import com.aaa.eleven.mapper.ResultCommitMapper;
-import com.aaa.eleven.model.Audit;
-import com.aaa.eleven.model.MappingProject;
-import com.aaa.eleven.model.ResultCommit;
+import com.aaa.eleven.model.*;
+import com.aaa.eleven.utils.FileNameUtils;
 import com.aaa.eleven.vo.MappingProjectAndResultCommitVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
+
+import static com.aaa.eleven.staticproperties.RedisProperties.POINT;
+import static com.aaa.eleven.staticproperties.TimeForatProperties.TIME_FORMAT;
 
 /**
  * @Company
@@ -118,56 +124,52 @@ public class MappingProjectService extends BaseService<MappingProject> {
     /**
      * 功能描述: <br>
      *@Description
-     * 同时增加t_mapping_project和t_result_commit表的数据
+     * 同时增加t_mapping_project t_audit、t_result_commit表的数据文件上传到t_resource
      * @Param: [mappingProjectAndResultCommitVo]
      * @Return: java.util.List
      * @Author: zh
      * @Date: 2020/7/16 0016 22:29
      */
-    public List insertMappingProjectAndResultCommit(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
-        List list=new ArrayList();
-        MappingProject mappingProject=new MappingProject();
-        ResultCommit resultCommit=new ResultCommit();
-        if(mappingProjectAndResultCommitVo !=null)
-        {
-            mappingProject.setId(mappingProjectAndResultCommitVo.getMapping_id());
-            mappingProject.setProjectType(mappingProjectAndResultCommitVo.getMapping_projectType());
-            mappingProject.setProjectName(mappingProjectAndResultCommitVo.getMapping_projectName());
-            mappingProject.setProjectLeader(mappingProjectAndResultCommitVo.getMapping_projectLeader());
-            mappingProject.setStartDate(mappingProjectAndResultCommitVo.getMapping_startDate());
-            mappingProject.setEndDate(mappingProjectAndResultCommitVo.getMapping_endDate());
-            mappingProject.setAcceptanceDepartment(mappingProjectAndResultCommitVo.getMapping_acceptanceDepartment());
-            mappingProject.setProjectAmount(mappingProjectAndResultCommitVo.getMapping_projectAmount());
-            mappingProject.setSchedule(mappingProjectAndResultCommitVo.getMapping_schedule());
-            Integer integer = mappingProjectMapper.insertMappingProject(mappingProject);
-            if (integer>0)
-            {
-                list.add(integer);
-                resultCommit.setPlottingScale(mappingProjectAndResultCommitVo.getResult_plotting_scale());
-                resultCommit.setMediumType(mappingProjectAndResultCommitVo.getResult_medium_type());
-                resultCommit.setResultDate(mappingProjectAndResultCommitVo.getResult_date());
-                resultCommit.setName(mappingProjectAndResultCommitVo.getResult_name());
-                resultCommit.setCreateDate(mappingProjectAndResultCommitVo.getResult_create_date());
-                resultCommit.setId(mappingProjectAndResultCommitVo.getResult_id());
-                resultCommit.setRefId(mappingProjectAndResultCommitVo.getMapping_id());
-                Integer integer1 = resultCommitMapper.insertResultCommit(resultCommit);
-                if (integer1>0)
-                {
-                    list.add(integer1);
-                    Audit audit=new Audit();
-                    audit.setSubmitTime(new Date());
-                    audit.setRefId(mappingProjectAndResultCommitVo.getMapping_id());
-                    audit.setStatus(1);
-                    audit.setName("111111");
-                    audit.setType(1);
-                    audit.setAuditTime(new Date());
-                    auditMapper.insert(audit);
-                    return list;
+    public int insertMappingProjectAndResultCommit(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo, UploadService uploadService,ResourceService resourceService){
+        if(mappingProjectAndResultCommitVo !=null){
+            //获取封装后的MappingProject、ResultCommit、Audit、Resource 对象
+            //判断id为空，为新增，不为空则不进行其他操作
+            if(mappingProjectAndResultCommitVo.getMapping_id() == null){
+                //新增MappingProject ，自动生成ID
+                mappingProjectAndResultCommitVo.setMapping_id(Long.parseLong(FileNameUtils.getFileName()));
+                MappingProject mappingProject = setMappingProject(mappingProjectAndResultCommitVo);
+                ResultCommit resultCommit = setResultCommit(mappingProjectAndResultCommitVo);
+                Audit audit = setAudit(mappingProjectAndResultCommitVo);
+                if(mappingProject != null && resultCommit != null && audit != null){
+                    //新增项目
+                    Integer i1 = mappingProjectMapper.insertMappingProject(mappingProject);
+                    //新增commit
+                    Integer i2 = resultCommitMapper.insertResultCommit(resultCommit);
+                    //新增审核记录
+                    int i3 = auditMapper.insert(audit);
+                    MultipartFile contractFile = mappingProjectAndResultCommitVo.getContractFile();
+                    String contractFileName = mappingProjectAndResultCommitVo.getContractFileName();
+                    Long id = mappingProjectAndResultCommitVo.getMapping_id();
+                    //新增合同附件
+                    Resource resource1 = setResource(contractFile, contractFileName, id, uploadService);
+                    if(resource1 != null){
+                        resourceService.insert(resource1);
+                    }
+                    //新增范围线附件
+                    MultipartFile rangetFile = mappingProjectAndResultCommitVo.getRangetFile();
+                    String rangeFileName = mappingProjectAndResultCommitVo.getRangeFileName();
+                    Resource resource2 = setResource(rangetFile, rangeFileName, id, uploadService);
+                    if(resource2 != null){
+                        resourceService.insert(resource2);
+                    }
+                    if(i1 > 0 && i2 > 0 && i3 > 0){
+                        return 1;
+                    }
                 }
             }
 
         }
-        return null;
+        return 0;
 
     }
     /**
@@ -179,64 +181,66 @@ public class MappingProjectService extends BaseService<MappingProject> {
      * @Author: zh
      * @Date: 2020/7/16 0016 20:59
      */
-    public List updateMappingProjectById(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
-        List list=new ArrayList();
-        MappingProject mappingProject=new MappingProject();
-        ResultCommit resultCommit=new ResultCommit();
-        if (mappingProjectAndResultCommitVo!=null)
-        {
-            mappingProject.setId(mappingProjectAndResultCommitVo.getMapping_id());
-            mappingProject.setProjectType(mappingProjectAndResultCommitVo.getMapping_projectType());
-            mappingProject.setProjectName(mappingProjectAndResultCommitVo.getMapping_projectName());
-            mappingProject.setProjectLeader(mappingProjectAndResultCommitVo.getMapping_projectLeader());
-            mappingProject.setStartDate(mappingProjectAndResultCommitVo.getMapping_startDate());
-            mappingProject.setEndDate(mappingProjectAndResultCommitVo.getMapping_endDate());
-            mappingProject.setAcceptanceDepartment(mappingProjectAndResultCommitVo.getMapping_acceptanceDepartment());
-            mappingProject.setProjectAmount(mappingProjectAndResultCommitVo.getMapping_projectAmount());
-            mappingProject.setSchedule(mappingProjectAndResultCommitVo.getMapping_schedule());
-            Integer integer = mappingProjectMapper.updateMappingProjectById(mappingProject);
-            if(integer>0)
-            {
-                list.add(integer);
-                resultCommit.setPlottingScale(mappingProjectAndResultCommitVo.getResult_plotting_scale());
-                resultCommit.setMediumType(mappingProjectAndResultCommitVo.getResult_medium_type());
-                resultCommit.setResultDate(mappingProjectAndResultCommitVo.getResult_date());
-                resultCommit.setName(mappingProjectAndResultCommitVo.getResult_name());
-                resultCommit.setCreateDate(mappingProjectAndResultCommitVo.getResult_create_date());
-                resultCommit.setRefId(mappingProjectAndResultCommitVo.getMapping_id());
-                Integer integer1 = resultCommitMapper.updateResultCommit(resultCommit);
-                if (integer1>0)
-                {
-                    list.add(integer1);
-
-                    return list;
+    public int updateMappingProjectById(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo, UploadService uploadService,ResourceService resourceService){
+        if(mappingProjectAndResultCommitVo !=null){
+            //获取封装后的MappingProject、ResultCommit、Audit、Resource 对象
+            //判断id不为空，为修改，为空则不进行其他操作
+            if(mappingProjectAndResultCommitVo.getMapping_id() != null){
+                MappingProject mappingProject = setMappingProject(mappingProjectAndResultCommitVo);
+                ResultCommit resultCommit = setResultCommit(mappingProjectAndResultCommitVo);
+                Audit audit = setAudit(mappingProjectAndResultCommitVo);
+                if(mappingProject != null && resultCommit != null && audit != null){
+                    //新增项目
+                    Integer i1 = mappingProjectMapper.updateMappingProjectById(mappingProject);
+                    //新增commit
+                    Integer i2 = resultCommitMapper.updateResultCommit(resultCommit);
+                    //新增审核记录
+                    int i3 = auditMapper.insert(audit);
+                    MultipartFile contractFile = mappingProjectAndResultCommitVo.getContractFile();
+                    String contractFileName = mappingProjectAndResultCommitVo.getContractFileName();
+                    Long id = mappingProjectAndResultCommitVo.getMapping_id();
+                    //修改合同附件
+                    Resource resource1 = setResource(contractFile, contractFileName, id, uploadService);
+                    if(resource1 != null){
+                        resourceService.update(resource1);
+                    }
+                    //修改范围线附件
+                    MultipartFile rangetFile = mappingProjectAndResultCommitVo.getRangetFile();
+                    String rangeFileName = mappingProjectAndResultCommitVo.getRangeFileName();
+                    Resource resource2 = setResource(rangetFile, rangeFileName, id, uploadService);
+                    if(resource2 != null){
+                        resourceService.update(resource2);
+                    }
+                    if(i1 > 0 && i2 > 0 && i3 > 0){
+                        return 1;
+                    }
                 }
             }
-
         }
-        return null;
-
+        return 0;
     }
 
     /**
      * 删除
+     *  mappingProject resultCommit audit resource
      * @param id
      * @return
      */
-    public List deleteMappingProjectAndResult(Long id){
-            List list=new ArrayList();
-            Integer insert = mappingProjectMapper.deleteMappingProjectById(id);
-            if(insert>0)
-            {
-                list.add(insert);
-                Integer integer = resultCommitMapper.deleteResultCommitByRefId(id);
-                if(integer>0)
-                {
-                    list.add(integer);
-                    return list;
-                }
-            }
-            return null;
+    public int deleteMappingProjectAndResult(Long id,ResourceService resourceService){
+        if(id != null){
+            Integer i1 = mappingProjectMapper.deleteMappingProjectById(id);
+            Integer i2 = resultCommitMapper.deleteResultCommitByRefId(id);
+            //删除audit表记录
+            Audit audit = new Audit();
+            audit.setRefId(id);
+            int i3 = auditMapper.delete(audit);
+            //删除resource记录
+            Resource resource = new Resource();
+            resource.setRefBizId(id);
+            Integer i4 = resourceService.delete(resource);
+            return 1;
+        }
+        return 0;
     }
     /**
      * 功能描述: <br>
@@ -279,4 +283,326 @@ public class MappingProjectService extends BaseService<MappingProject> {
         }
     }
 
+    /***
+     * @Author ftt
+     * @Description
+     * 通过MappingProjectAndResultCommit传参，返回MappingProject实体类
+     * @Date 2020/7/20 22:14
+     * @Param [mappingProjectAndResultCommitVo]
+     * @return com.aaa.eleven.model.MappingProject
+     */
+    private MappingProject setMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
+        MappingProject mappingProject = new MappingProject();
+        if(mappingProjectAndResultCommitVo !=null) {
+            //判断 id 不为空
+            if (mappingProjectAndResultCommitVo.getMapping_id() != null) {
+                mappingProject.setId(mappingProjectAndResultCommitVo.getMapping_id());
+                mappingProject.setProjectType(mappingProjectAndResultCommitVo.getMapping_projectType());
+                mappingProject.setProjectName(mappingProjectAndResultCommitVo.getMapping_projectName());
+                mappingProject.setProjectLeader(mappingProjectAndResultCommitVo.getMapping_projectLeader());
+                mappingProject.setStartDate(mappingProjectAndResultCommitVo.getMapping_startDate());
+                mappingProject.setEndDate(mappingProjectAndResultCommitVo.getMapping_endDate());
+                mappingProject.setAcceptanceDepartment(mappingProjectAndResultCommitVo.getMapping_acceptanceDepartment());
+                mappingProject.setProjectAmount(mappingProjectAndResultCommitVo.getMapping_projectAmount());
+                mappingProject.setSchedule(mappingProjectAndResultCommitVo.getMapping_schedule());
+            }
+        }
+        return mappingProject;
+    }
+
+    /***
+     * @Author ftt
+     * @Description
+     * 通过MappingProjectAndResultCommit传参，返回ResultCommit实体类
+     * @Date 2020/7/20 22:20
+     * @Param [mappingProjectAndResultCommitVo]
+     * @return com.aaa.eleven.model.ResultCommit
+     */
+    private ResultCommit setResultCommit(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
+        ResultCommit resultCommit = new ResultCommit();
+        if(mappingProjectAndResultCommitVo !=null) {
+            //判断 id 不为空
+            if (mappingProjectAndResultCommitVo.getMapping_id() != null) {
+                resultCommit.setPlottingScale(mappingProjectAndResultCommitVo.getResult_plotting_scale());
+                resultCommit.setMediumType(mappingProjectAndResultCommitVo.getResult_medium_type());
+                resultCommit.setResultDate(mappingProjectAndResultCommitVo.getResult_date());
+                resultCommit.setName(mappingProjectAndResultCommitVo.getResult_name());
+                resultCommit.setCreateDate(mappingProjectAndResultCommitVo.getResult_create_date());
+                resultCommit.setId(mappingProjectAndResultCommitVo.getResult_id());
+                //判断mappingProjectAndResultCommitVo.getMapping_id()是否为空，为空再次生成id，不为空 set
+                if(mappingProjectAndResultCommitVo.getMapping_id() != null){
+                    resultCommit.setRefId(mappingProjectAndResultCommitVo.getMapping_id());
+                }else{
+                    resultCommit.setRefId(Long.parseLong(FileNameUtils.getFileName()));
+                }
+            }
+        }
+        return resultCommit;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 通过MappingProjectAndResultCommit传参，返回Audit实体类
+     * @Date 2020/7/20 22:29
+     * @Param [mappingProjectAndResultCommitVo]
+     * @return com.aaa.eleven.model.Audit
+     */
+   private Audit setAudit(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
+       Audit audit=new Audit();
+       if(mappingProjectAndResultCommitVo.getMapping_id() != null){
+           audit.setId(Long.parseLong(FileNameUtils.getFileName()));
+           audit.setSubmitTime(new Date());
+           audit.setRefId(mappingProjectAndResultCommitVo.getMapping_id());
+           audit.setStatus(2);
+           audit.setName("项目登记审核");
+           audit.setType(1);
+           audit.setAuditTime(new Date());
+       }
+       return audit;
+   }
+   /***
+    * @Author ftt
+    * @Description
+    * 通过MappingProjectAndResultCommit传参，返回Resource实体类
+    * @Date 2020/7/20 22:30
+    * @Param [mappingProjectAndResultCommitVo]
+    * @return com.aaa.eleven.model.Resource
+    */
+   private Resource setResource(MultipartFile File,String FileName,Long id,UploadService uploadService){
+       Resource resource1 = new Resource();
+       if(File != null && FileName != null){
+           FtpFile upload1 = uploadService.upload(File, FileName);
+           resource1.setId(Long.parseLong(FileNameUtils.getFileName()));
+           resource1.setRefBizId(id);
+           resource1.setRefBizType("附件");
+           resource1.setPath(upload1.getFilePath());
+           resource1.setCreateTime(new Date());
+           resource1.setName(upload1.getFileName());
+           resource1.setExtName(upload1.getFileName().substring(upload1.getFileName().lastIndexOf(POINT)));
+       }
+       return resource1;
+   }
+
+    /**
+     * 根据项目 id查询项目详细
+     */
+    public MappingProject  selectProjectByID(String id){
+        if (id !=null){
+            MappingProject mappingProject = mappingProjectMapper.selectByPrimaryKey(id);
+            if (mappingProject !=null){
+                return mappingProject;
+            }else {
+                return null;
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * 根据项目名字模糊查询并分页
+     * @param projectName
+     * @return
+     */
+    public PageInfo<Map> selectAllMappingProject( String projectName,int curpage,int pagesize){
+        if (projectName !=null){
+            PageHelper.startPage(curpage, pagesize);
+            List<MappingProject> mappingProjects = mappingProjectMapper.selectAllMappingProject(projectName);
+            PageInfo<Map> mapPageInfo = new PageInfo(mappingProjects);
+            if (mappingProjects !=null){
+                return mapPageInfo;
+            }
+            return null;
+        }
+        return null;
+    }
+    /**
+     * 根据项目id查询审核记录
+     */
+    public PageInfo<Map> selectAuditRecords(String id,int curpage,int pagesize){
+        if (id !=null){
+            PageHelper.startPage(curpage, pagesize);
+            Example example = new Example(Audit.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("refId",id);
+            List<Audit> audits = auditMapper.selectByExample(example);
+            PageInfo<Map> mapPageInfo = new PageInfo(audits);
+            if (audits !=null){
+                return mapPageInfo;
+            }else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 汇交成果信息，的详情，根据项目id查询相应的项目信息，资源表，汇交结果表
+     * 首先查询出项目的汇交成果状态为0通过的项目
+     */
+    //projectName有默认值
+    public PageInfo<Map> selectResultZeroPass(Integer curpage,Integer pagesize,String projectName){
+
+        PageHelper.startPage(curpage, pagesize);
+        List<Map<String, Object>> select = mappingProjectMapper.selectResultZeroPass(projectName);
+        PageInfo<Map> mapPageInfo = new PageInfo(select);
+        if (select !=null){
+            return mapPageInfo;
+        }
+        return null;
+    }
+
+
+    /**
+     * 汇交成果信息，的详情，根据项目id查询相应的项目信息，资源表，汇交结果表
+     * @param id
+     * @return
+     */
+    public HashMap selectResourceAndResult(String id){
+        if (id !=null){
+            List<Map<String, Object>> maps = mappingProjectMapper.selectResource(id);
+            List<Map<String, Object>> maps1 = mappingProjectMapper.selectResult(id);
+            HashMap hashMap = new HashMap();
+            hashMap.put("附件",maps);
+            hashMap.put("汇交结果",maps1);
+            if (maps !=null && maps1 !=null){
+                return hashMap;
+            }else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 项目审核，首先查出项目审核状态为已提交audit_status=2的项目
+     */                                                               //projectName有默认值
+    public PageInfo<Map> selectAuditCommit(int curpage,int pagesize,String projectName){
+        PageHelper.startPage(curpage, pagesize);
+        List<Map<String, Object>> maps = mappingProjectMapper.selectAuditCommit(projectName);
+        PageInfo<Map> mapPageInfo = new PageInfo(maps);
+        if (maps !=null){
+            return mapPageInfo;
+        }
+        return null;
+    }
+
+    /**
+     * 项目审核
+     */
+    public boolean projectAudit(HashMap hashMap){
+
+        if (hashMap.get("id") !=null){
+            //项目id
+            Object id1 = hashMap.get("id");
+            long id = Long.valueOf(String.valueOf(id1)).longValue();
+            MappingProject mappingProject1 = new MappingProject();
+            mappingProject1.setId(id);
+            mappingProject1.setModifyTime(DateUtils.formatDate(new Date(),TIME_FORMAT));
+            Object status = hashMap.get("status");
+            int i1 = Integer.parseInt(status.toString());
+            mappingProject1.setAuditStatus(i1);
+
+            int i = mappingProjectMapper.updateByPrimaryKeySelective(mappingProject1);
+
+            //生成audit的编号
+            Audit audit = new Audit();
+            String fileName = FileNameUtils.getFileName();
+            long l = Long.parseLong(fileName);
+            audit.setId(l);
+            //获取当前审核时间
+            DateUtils.formatDate(new Date(),TIME_FORMAT);
+            audit.setAuditTime(new Date());
+
+            Object userId = hashMap.get("userId");
+            long l1 = Long.valueOf(String.valueOf(userId)).longValue();
+            audit.setUserId(l1);
+            audit.setRefId(id);
+            audit.setCreateTime(new Date());
+            audit.setStatus(i1);
+            Object momo = hashMap.get("momo");
+            String s = String.valueOf(momo);
+            audit.setMemo(s);
+            audit.setName("项目进度审核");
+            audit.setType(3);
+
+
+            int insert = auditMapper.insert(audit);
+
+            if (insert >0 && i >0){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+
+
+    /**
+     * 成果汇交审核
+     * 首先查出项目成果状态为已提交results_status=2的项目
+     */                                                           //projectName有默认值
+    public PageInfo<Map> selectAuditResult(int curpage,int pagesize, String projectName){
+        PageHelper.startPage(curpage, pagesize);
+        List<Map<String, Object>> maps = mappingProjectMapper.selectAuditResult(projectName);
+        PageInfo<Map> mapPageInfo = new PageInfo(maps);
+        if (maps !=null){
+            return mapPageInfo;
+        }
+        return null;
+    }
+
+    /**
+     * 汇交审核
+     */
+    public boolean resultAudit(HashMap hashMap){
+
+        if (hashMap.get("id") !=null){
+            //项目id
+            Object id1 = hashMap.get("id");
+            long id = Long.valueOf(String.valueOf(id1)).longValue();
+
+            MappingProject mappingProject1 = new MappingProject();
+            mappingProject1.setId(id);
+            //mappingProject1.setModifyTime(DateUtils.formatDate(new Date(),TIME_FORMAT));
+            Object status = hashMap.get("status");
+            int i1 = Integer.parseInt(status.toString());
+            mappingProject1.setResultsStatus(i1);
+
+            int i = mappingProjectMapper.updateByPrimaryKeySelective(mappingProject1);
+
+            //生成audit的编号
+            Audit audit = new Audit();
+            String fileName = FileNameUtils.getFileName();
+            long l = Long.parseLong(fileName);
+            audit.setId(l);
+            //获取当前审核时间
+            DateUtils.formatDate(new Date(),TIME_FORMAT);
+            audit.setAuditTime(new Date());
+
+            Object userId = hashMap.get("userId");
+            long l1 = Long.valueOf(String.valueOf(userId)).longValue();
+            audit.setUserId(l1);
+            audit.setRefId(id);
+            audit.setCreateTime(new Date());
+            audit.setStatus(i1);
+            Object momo = hashMap.get("momo");
+            String s = String.valueOf(momo);
+            audit.setMemo(s);
+            audit.setType(4);
+            audit.setName("项目汇交审核");
+
+            int insert = auditMapper.insert(audit);
+
+            if (insert >0 && i >0){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
 }
+

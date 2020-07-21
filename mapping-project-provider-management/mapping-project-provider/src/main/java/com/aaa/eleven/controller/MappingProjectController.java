@@ -3,13 +3,16 @@ package com.aaa.eleven.controller;
 import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.base.CommonController;
 import com.aaa.eleven.base.ResultData;
+import com.aaa.eleven.ftp.UploadService;
 import com.aaa.eleven.model.MappingProject;
 import com.aaa.eleven.service.MappingProjectService;
+import com.aaa.eleven.service.ResourceService;
 import com.aaa.eleven.vo.MappingProjectAndResultCommitVo;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +28,10 @@ import static com.aaa.eleven.status.Status.*;
 public class MappingProjectController extends CommonController<MappingProject> {
     @Autowired
     private MappingProjectService mappingProjectService;
+    @Autowired
+    private UploadService uploadService;
+    @Autowired
+    private ResourceService resourceService;
     @Override
     public BaseService<MappingProject> getBaseService() {
         return mappingProjectService;
@@ -105,8 +112,8 @@ public class MappingProjectController extends CommonController<MappingProject> {
     @PutMapping("/updateMappingProject")
     public ResultData updateMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
         System.out.println(mappingProjectAndResultCommitVo);
-        List list = mappingProjectService.updateMappingProjectById(mappingProjectAndResultCommitVo);
-        if(list.size()==2)
+        int list = mappingProjectService.updateMappingProjectById(mappingProjectAndResultCommitVo,uploadService,resourceService);
+        if(list > 0)
         {
             return super.updateSuccess(UPDATE_SUCCESS.getMsg());
         }else
@@ -127,8 +134,8 @@ public class MappingProjectController extends CommonController<MappingProject> {
     @PostMapping("/insertMappingProject")
     public ResultData insertMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
         System.out.println(mappingProjectAndResultCommitVo);
-        List list = mappingProjectService.insertMappingProjectAndResultCommit(mappingProjectAndResultCommitVo);
-        if(list.size() == 2)
+        Integer i = mappingProjectService.insertMappingProjectAndResultCommit(mappingProjectAndResultCommitVo,uploadService,resourceService);
+        if( i > 0)
         {
             return super.insertSuccess(INSERT_SUCCESS.getMsg());
         }else{
@@ -146,8 +153,8 @@ public class MappingProjectController extends CommonController<MappingProject> {
      */
     @DeleteMapping("deleteMappingProjectAndResult")
     public ResultData deleteMappingProjectAndResult(Long id){
-        List list = mappingProjectService.deleteMappingProjectAndResult(id);
-        if(list.size()>2)
+        int list = mappingProjectService.deleteMappingProjectAndResult(id,resourceService);
+        if(list > 0)
         {
             return super.deleteSuccess(DELETE_SUCCESS.getMsg());
         }
@@ -231,5 +238,133 @@ public class MappingProjectController extends CommonController<MappingProject> {
             return null;
         }
     }
+    /**
+     * 根据项目 id查询项目详细
+     */
+    @GetMapping("/mappingProject/selectProjectByID")
+    public ResultData selectProjectByID(@RequestParam String id) {
+        MappingProject mappingProject = mappingProjectService.selectProjectByID(id);
+        if (mappingProject != null) {
+            return selectSuccess(mappingProject);
+        }
+        return selectFailed();
+    }
+
+    /**
+     * 根据项目名字模糊查询并分页
+     *
+     * @param projectName
+     * @return
+     */
+    @GetMapping("/mappingProject/selectAllMappingProjectByprojectName")
+    public ResultData selectAllMappingProject(@RequestParam String projectName, @RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize) {
+        PageInfo<Map> mapPageInfo = mappingProjectService.selectAllMappingProject(projectName, curpage, pagesize);
+        if (mapPageInfo != null) {
+            return selectSuccess(mapPageInfo);
+        } else {
+            return selectFailed();
+        }
+    }
+
+    /**
+     * 根据项目id查询审核记录
+     */
+    @GetMapping("/mappingProject/selectAuditRecords")
+    public ResultData selectAuditRecords(@RequestParam String id, @RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize) {
+        PageInfo<Map> mapPageInfo = mappingProjectService.selectAuditRecords(id, curpage, pagesize);
+        if (mapPageInfo != null) {
+            return selectSuccess(mapPageInfo);
+        } else {
+            return selectFailed();
+        }
+    }
+
+
+    /**
+     * 首先查询出项目的汇交成果状态为0通过的项目，并模糊查询
+     * @param curpage
+     * @param pagesize
+     * @return
+     */
+    @GetMapping("/mappingProject/selectResultZeroPass")
+    public ResultData selectResultZeroPass(@RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize,@RequestParam(value = "projectName", required = false, defaultValue = "")String projectName){
+
+        PageInfo<Map> mapPageInfo = mappingProjectService.selectResultZeroPass(curpage, pagesize,projectName);
+        if (mapPageInfo !=null){
+            return selectSuccess(mapPageInfo);
+        }else {
+            return selectFailed();
+        }
+    }
+
+
+
+    /**
+     * 汇交成果信息，的详情，根据项目id查询相应的项目信息，资源表，汇交结果表
+     * @param id
+     * @return
+     */
+
+    @GetMapping("/mappingProject/selectResourceAndResult")
+    public ResultData selectResourceAndResult(@RequestParam String id){
+        HashMap hashMap = mappingProjectService.selectResourceAndResult(id);
+        if (hashMap !=null){
+            return selectSuccess(hashMap);
+        }else {
+            return selectFailed();
+        }
+    }
+
+    /**
+     * 项目审核，首先查出项目审核状态为已提交audit_status=2的项目
+     */
+    @GetMapping("/mappingProject/selectAuditCommit")
+    public ResultData selectAuditCommit(@RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize,@RequestParam(value = "projectName", required = false, defaultValue = "")String projectName) {
+
+        PageInfo<Map> mapPageInfo = mappingProjectService.selectAuditCommit(curpage, pagesize, projectName);
+        if (mapPageInfo != null) {
+            return selectSuccess(mapPageInfo);
+        }
+        return selectFailed();
+    }
+
+    /**
+     * 项目审核
+     */
+    @GetMapping("/mappingProject/projectAudit")
+    public ResultData projectAudit(@RequestParam HashMap hashMap){
+        boolean b = mappingProjectService.projectAudit(hashMap);
+        if (b){
+            return updateSuccess(b);
+        }
+        return updateFailed();
+    }
+
+    /**
+     * 成果汇交审核
+     * 首先查出项目成果状态为已提交results_status=2的项目
+     */
+    @GetMapping("/mappingProject/selectAuditResult")
+    public ResultData selectAuditResult(@RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize,@RequestParam(value = "projectName", required = false, defaultValue = "")String projectName){
+        PageInfo<Map> mapPageInfo = mappingProjectService.selectAuditResult(curpage, pagesize, projectName);
+        if (mapPageInfo != null) {
+            return selectSuccess(mapPageInfo);
+        }
+        return selectFailed();
+    }
+
+    /**
+     * 汇交审核
+     */
+    @GetMapping("/mappingProject/resultAudit")
+    public ResultData resultAudit(@RequestParam HashMap hashMap){
+        boolean b = mappingProjectService.resultAudit(hashMap);
+        if (b){
+            return updateSuccess(b);
+        }
+        return updateFailed();
+    }
+
+
 
 }

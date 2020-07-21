@@ -18,7 +18,7 @@ public interface AuditMapper extends Mapper<Audit> {
      * @Param [unitName]
      * @return java.util.List<com.aaa.eleven.model.Audit>
      */
-    @Select("select ta.id, ta.name, ta.status, ta.memo, ta.create_time, ta.audit_time, tmu.unit_name from t_audit ta, t_mapping_unit tmu where ta.ref_id = tmu.id and tmu.unit_name = #{unitName}")
+    @Select("select ta.*,tmu.* from t_audit ta, t_mapping_unit tmu where ta.ref_id = tmu.id and tmu.unit_name = #{unitName}")
     List<Audit> selectAuditRecordList(@Param("unitName") String unitName);
     /***
      * @Author ftt

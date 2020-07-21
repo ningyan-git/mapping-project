@@ -1,8 +1,13 @@
 package com.aaa.eleven.vo;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.Serializable;
 import java.util.Date;
-
+@Data
+@Accessors(chain = true)
 public class MappingProjectAndResultCommitVo implements Serializable {
     private  Long mapping_id;
     private String mapping_projectType;
@@ -19,7 +24,22 @@ public class MappingProjectAndResultCommitVo implements Serializable {
     private Date result_date;
     private String result_name;
     private Date result_create_date;
-
+    /**
+     * 范围线文件
+     */
+    private MultipartFile rangetFile;
+    /**
+     * 范围线文件名
+     */
+    private String rangeFileName;
+    /**
+     * 合同文件
+     */
+    private MultipartFile contractFile;
+    /**
+     * 合同文件名
+     */
+    private String contractFileName;
     public Long getMapping_id() {
         return mapping_id;
     }

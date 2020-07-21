@@ -59,4 +59,39 @@ public interface MappingProjectMapper extends Mapper<MappingProject> {
     @Select("select * from t_mapping_project where project_name=#{projectName}")
     MappingProject selectMappingProjectByProjectName(MappingProject mappingProject);
 
+    /**
+     * 根据项目名字模糊查询并分页
+     * @param projectName
+     * @return
+     */
+    List<MappingProject> selectAllMappingProject(@Param("projectName") String projectName);
+
+
+    /**
+     * 首先查询出项目的汇交成果状态为0通过的项目并且根据项目 名字模糊查询
+     */
+
+    List<Map<String,Object>> selectResultZeroPass(@Param("projectName") String projectName);
+    /**
+     * 汇交成果信息，的详情，根据项目id查询相应的项目信息，资源表，汇交结果表
+     */
+
+    List<Map<String,Object>> selectResource(@Param("id") String id);
+    List<Map<String,Object>> selectResult(@Param("id") String id);
+
+
+
+
+    /**
+     * 项目审核，首先查出项目审核状态为已提交audit_status=2的项目
+     */
+    List<Map<String,Object>> selectAuditCommit(@Param("projectName") String projectName);
+
+
+
+    /**
+     * 成果汇交审核
+     * 首先查出项目成果状态为已提交results_status=2的项目
+     */
+    List<Map<String,Object>> selectAuditResult(@Param("projectName") String projectName);
 }

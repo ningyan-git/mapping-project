@@ -74,7 +74,7 @@ public class MappingUnitService extends BaseService<MappingUnit> {
      * @Author ftt
      * @Description
      * 根据主键进行修改
-     *     修改 mappingUnit modify_time audit_status 2
+     *     修改 mappingUnit modify_time audit_status 3
      *     新增 audit id name 单位信息审核 type 1 submit_time ref_id (mappingUnit id)
      * @Date 2020/7/16 15:41
      * @Param [mappingUnit]
@@ -85,7 +85,7 @@ public class MappingUnitService extends BaseService<MappingUnit> {
             if(null != mappingUnit.getId()){
                 //修改mappingUnit表
                 mappingUnit.setModifyTime(new Date());
-                mappingUnit.setAuditStatus(2);
+                mappingUnit.setAuditStatus(3);
                 int i1 = mappingUnitMapper.updateByPrimaryKey(mappingUnit);
                 //新增到audit表
                 Audit audit = new Audit();
@@ -121,6 +121,8 @@ public class MappingUnitService extends BaseService<MappingUnit> {
                 //新增到单位表
                 mappingUnit.setId(Long.parseLong(FileNameUtils.getFileName()));
                 mappingUnit.setCreateTime(new Date());
+                //设置审核状态为未提交
+                mappingUnit.setAuditStatus(3);
                 int i1 = mappingUnitMapper.insert(mappingUnit);
                 //注册到user表
                 User user = new User();
@@ -283,5 +285,36 @@ public class MappingUnitService extends BaseService<MappingUnit> {
         {
             return null;
         }
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 单位信息提交审核
+     *       mappingUnit表 auditStatus 为2
+     *       新增audit表审核记录
+     * @Date 2020/7/20 19:04
+     * @Param [id]
+     * @return java.lang.Boolean
+     */
+    public Boolean submitAudit(Long id,AuditService auditService){
+        if(id != null){
+            MappingUnit mappingUnit = new MappingUnit();
+            mappingUnit.setAuditStatus(2);
+            //修改单位表审核状态
+            Integer i1 = update(mappingUnit);
+            //新增一条审核记录
+            Audit audit = new Audit();
+            audit.setId(Long.parseLong(FileNameUtils.getFileName()));
+            audit.setName("单位信息审核");
+            audit.setSubmitTime(new Date());
+            audit.setType(1);
+            audit.setCreateTime(new Date());
+            audit.setRefId(id);
+            Integer i2 = auditService.insert(audit);
+            if(i1 > 0 && i2 > 0 ){
+                return true;
+            }
+        }
+        return  false;
     }
 }

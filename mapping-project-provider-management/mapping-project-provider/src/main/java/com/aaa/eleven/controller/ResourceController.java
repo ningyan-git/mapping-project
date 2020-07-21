@@ -30,7 +30,6 @@ public class ResourceController extends CommonController<Resource> {
 
     /**
      *  根据 refBizId 查询信息 返回 测绘成果及档案管理、质量体系、通用材料汇总
-     *  TODO api
      * @param map
      * @return
      */

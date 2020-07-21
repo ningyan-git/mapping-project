@@ -6,6 +6,7 @@ import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.mapper.PrincipalMapper;
 import com.aaa.eleven.model.Principal;
 import com.aaa.eleven.model.SpecialPost;
+import com.aaa.eleven.service.MappingUnitService;
 import com.aaa.eleven.service.PrincipalService;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageInfo;
@@ -26,6 +27,8 @@ import java.util.Map;
 public class PrincipalController extends CommonController<Principal> {
     @Autowired
     private PrincipalService principalService;
+    @Autowired
+    private MappingUnitService mappingUnitService;
     @Override
     public BaseService<Principal> getBaseService() {
         return principalService;
@@ -73,7 +76,7 @@ public class PrincipalController extends CommonController<Principal> {
      */
     @PostMapping("/principal/insertPrincipal")
     public ResultData insertPrincipal(@RequestBody Principal principal){
-        boolean i = principalService.insertPrincipal(principal);
+        boolean i = principalService.insertPrincipal(principal,mappingUnitService);
         if(i ){
             return  insertSuccess();
         }
@@ -89,7 +92,7 @@ public class PrincipalController extends CommonController<Principal> {
      */
     @PostMapping("/principal/updatePrincipal")
     public ResultData updatePrincipal(@RequestBody Principal principal){
-        Boolean i = principalService.updatePrincipal(principal);
+        Boolean i = principalService.updatePrincipal(principal,mappingUnitService);
         if(i){
             return  updateSuccess();
         }
@@ -105,7 +108,7 @@ public class PrincipalController extends CommonController<Principal> {
      */
     @PostMapping("/principal/deletePrincipal")
     public ResultData deletePrincipal(@RequestBody Principal principal){
-        Boolean i = principalService.deletePrincipal(principal);
+        Boolean i = principalService.deletePrincipal(principal,mappingUnitService);
         if(i){
             return  deleteSuccess();
         }

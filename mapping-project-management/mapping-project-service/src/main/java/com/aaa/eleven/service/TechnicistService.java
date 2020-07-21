@@ -3,6 +3,7 @@ package com.aaa.eleven.service;
 import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.mapper.TechnicistMapper;
+import com.aaa.eleven.model.MappingUnit;
 import com.aaa.eleven.model.Technicist;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageHelper;
@@ -74,14 +75,21 @@ public class TechnicistService extends BaseService<Technicist> {
      * @Param [technicist]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean insertTechnicist(Technicist technicist){
+    public Boolean insertTechnicist(Technicist technicist,MappingUnitService mappingUnitService){
         if(technicist != null){
             if(technicist.getName() != null && technicist.getMajorType() != null && technicist.getIdType() != null && technicist.getIdNumber() != null){
                 technicist.setId(Long.parseLong(FileNameUtils.getFileName()));
                 technicist.setCreateTime(new Date());
                 Integer i = insert(technicist);
-                if(i > 0){
-                    return true;
+                if(technicist.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(technicist.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -95,13 +103,20 @@ public class TechnicistService extends BaseService<Technicist> {
      * @Param [technicist]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean updateTechnicist( Technicist technicist){
+    public Boolean updateTechnicist( Technicist technicist,MappingUnitService mappingUnitService){
         if(technicist != null){
             if(technicist.getId() != null){
                 technicist.setModifyTime(new Date());
                 Integer i = update(technicist);
-                if(i > 0){
-                    return true;
+                if(technicist.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(technicist.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -115,12 +130,19 @@ public class TechnicistService extends BaseService<Technicist> {
      * @Param [technicist]
      * @return com.aaa.eleven.base.ResultData
      */
-    public Boolean deleteTechnicist(Technicist technicist){
+    public Boolean deleteTechnicist(Technicist technicist,MappingUnitService mappingUnitService){
         if(technicist != null){
             if(technicist.getId() != null){
                 Integer i = delete(technicist);
-                if(i > 0){
-                    return true;
+                if(technicist.getUserId() != null) {
+                    //修改mappingUnit表的auditstatus为3 未提交
+                    MappingUnit mappingUnit = new MappingUnit();
+                    mappingUnit.setUserId(technicist.getUserId());
+                    mappingUnit.setAuditStatus(3);
+                    Integer i1 = mappingUnitService.update(mappingUnit);
+                    if (i > 0 && i1 > 0) {
+                        return true;
+                    }
                 }
             }
         }

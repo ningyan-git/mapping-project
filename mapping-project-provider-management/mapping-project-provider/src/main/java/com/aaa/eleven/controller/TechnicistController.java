@@ -5,6 +5,7 @@ import com.aaa.eleven.base.CommonController;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.SpecialPost;
 import com.aaa.eleven.model.Technicist;
+import com.aaa.eleven.service.MappingUnitService;
 import com.aaa.eleven.service.TechnicistService;
 import com.aaa.eleven.utils.FileNameUtils;
 import com.github.pagehelper.PageInfo;
@@ -25,6 +26,8 @@ import java.util.Map;
 public class TechnicistController extends CommonController<Technicist> {
     @Autowired
     private TechnicistService technicistService;
+    @Autowired
+    private MappingUnitService mappingUnitService;
     @Override
     public BaseService<Technicist> getBaseService() {
         return technicistService;
@@ -73,7 +76,7 @@ public class TechnicistController extends CommonController<Technicist> {
      */
     @PostMapping("/technicist/insertTechnicist")
     public ResultData insertTechnicist(@RequestBody Technicist technicist){
-        Boolean i = technicistService.insertTechnicist(technicist);
+        Boolean i = technicistService.insertTechnicist(technicist,mappingUnitService);
         if(i ){
             return insertSuccess();
         }
@@ -89,7 +92,7 @@ public class TechnicistController extends CommonController<Technicist> {
      */
     @PostMapping("/technicist/updateTechnicist")
     public ResultData updateTechnicist(@RequestBody Technicist technicist){
-        Boolean i = technicistService.updateTechnicist(technicist);
+        Boolean i = technicistService.updateTechnicist(technicist,mappingUnitService);
         if(i){
             return updateSuccess();
         }
@@ -105,7 +108,7 @@ public class TechnicistController extends CommonController<Technicist> {
      */
     @PostMapping("/technicist/deleteTechnicist")
     public ResultData deleteTechnicist(@RequestBody Technicist technicist){
-        Boolean i = technicistService.deleteTechnicist(technicist);
+        Boolean i = technicistService.deleteTechnicist(technicist,mappingUnitService);
         if(i){
             return deleteSuccess();
         }

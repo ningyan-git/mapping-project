@@ -234,4 +234,20 @@ public class MappingUnitController extends CommonController<MappingUnit> {
             return super.selectFailed(SELECT_FAILED.getMsg());
         }
     }
+    /***
+     * @Author ftt
+     * @Description
+     * 提交审核
+     * @Date 2020/7/20 19:14
+     * @Param [id]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    @GetMapping("/mappingUnit/submitAudit")
+    public ResultData submitAudit(@RequestParam("id") Long id){
+        Boolean flag = mappingUnitService.submitAudit(id, auditService);
+        if(flag){
+            return updateSuccess("提交成功");
+        }
+        return updateFailed("提交失败");
+    }
 }
