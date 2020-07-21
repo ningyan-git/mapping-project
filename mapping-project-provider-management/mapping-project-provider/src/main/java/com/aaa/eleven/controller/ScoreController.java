@@ -41,6 +41,7 @@ public class ScoreController extends CommonController<Score> {
      * @Author ftt
      * @Description
      * 查看评分记录
+     *      在单位审核的 单位列表的查看评分记录
      * @Date 2020/7/17 14:57
      * @Param []
      * @return com.aaa.eleven.base.ResultData
@@ -59,6 +60,7 @@ public class ScoreController extends CommonController<Score> {
      * @Author ftt
      * @Description
      * 调整分值
+     *      在单位审核的 单位列表的调整分值
      * @Date 2020/7/17 16:31
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData

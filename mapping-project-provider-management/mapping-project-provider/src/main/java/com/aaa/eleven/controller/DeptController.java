@@ -27,7 +27,19 @@ public class DeptController extends CommonController<Dept> {
     public BaseService<Dept> getBaseService() {
         return deptService;
     }
-
+    /**
+     * 批量删除部门信息
+     * @param ids
+     * @return
+     */
+    @PostMapping("/deleteBatchByIds")
+    public ResultData deleteBatchByIds(@RequestBody List<Integer> ids){
+        Integer deleteBatchByIds = deptService.deleteBatchByIds(ids);
+        if (deleteBatchByIds>0){
+            return deleteSuccess("批量删除成功");
+        }
+        return deleteFailed("批量删除失败");
+    }
     @GetMapping("/selectAll")
     public ResultData selectAllDept(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage , @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize,@RequestParam(value = "deptName",required = false,defaultValue = "") String deptName){
         List<Map<String, Object>> depts = deptService.selectAllDept(curpage,pagesize,deptName);

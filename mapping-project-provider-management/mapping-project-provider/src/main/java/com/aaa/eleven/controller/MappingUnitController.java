@@ -40,6 +40,7 @@ public class MappingUnitController extends CommonController<MappingUnit> {
      * @Author ftt
      * @Description
      * 查询单个单位信息
+     *  根据 userid  用于单位基本信息
      * @Date 2020/7/14 16:36
      * @Param [userId]
      * @return com.aaa.eleven.base.ResultData
@@ -47,6 +48,23 @@ public class MappingUnitController extends CommonController<MappingUnit> {
     @GetMapping("/mappingUnit/selectOneByUserId")
     public ResultData selectOneByUserId(@RequestParam("userId") long userId){
         MappingUnit mappingUnit = mappingUnitService.selectOne(userId);
+        if(null !=mappingUnit){
+            return selectSuccess(mappingUnit);
+        }
+        return selectFailed();
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 查询单个单位信息
+     *   根据unitID 用于单位审核的查看
+     * @Date 2020/7/14 16:36
+     * @Param [userId]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    @GetMapping("/mappingUnit/selectOneByUserId")
+    public ResultData selectOneById(@RequestParam("id") long id){
+        MappingUnit mappingUnit = mappingUnitService.selectOneById(id);
         if(null !=mappingUnit){
             return selectSuccess(mappingUnit);
         }

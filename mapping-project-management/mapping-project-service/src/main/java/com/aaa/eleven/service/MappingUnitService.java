@@ -73,6 +73,24 @@ public class MappingUnitService extends BaseService<MappingUnit> {
     /***
      * @Author ftt
      * @Description
+     * 查询单个单位信息
+     * 把Id放入一个对象中，根据这个对象查询单位信息
+     * @Date 2020/7/14 16:17
+     * @Param [userId]
+     * @return com.aaa.eleven.model.MappingUnit
+     */
+    public MappingUnit  selectOneById(Long id){
+        MappingUnit mappingUnit = new MappingUnit();
+        if(null!=id && !"".equals(id)){
+            mappingUnit.setId(id);
+            MappingUnit selectOne = mappingUnitMapper.selectOne(mappingUnit);
+            return selectOne;
+        }
+        return null;
+    }
+    /***
+     * @Author ftt
+     * @Description
      * 根据主键进行修改
      *     修改 mappingUnit modify_time audit_status 3
      *     新增 audit id name 单位信息审核 type 1 submit_time ref_id (mappingUnit id)

@@ -12,7 +12,13 @@
     <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
     <result column="MODIFY_TIME" property="modifyTime" jdbcType="DATE" />
   </resultMap>
-  <select id="selectAllDept" resultType="java.util.Map">
+  <delete id="deleteBachById" parameterType="list">
+    delete from t_dept where DEPT_ID in
+    <foreach collection="list" item="item" open="("  separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+    <select id="selectAllDept" resultType="java.util.Map">
        select * from t_dept
        <where>
          <if test="deptName !=null">

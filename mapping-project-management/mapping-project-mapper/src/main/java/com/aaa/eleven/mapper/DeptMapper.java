@@ -9,4 +9,9 @@ import java.util.Map;
 
 public interface DeptMapper extends Mapper<Dept> {
     public List<Map<String, Object>> selectAllDept(@Param("deptName") String deptName);
+    /**
+     * 批量删除部门信息
+     * @return
+     */
+    public Integer deleteBachById(List<Integer> ids);
 }

@@ -23,7 +23,19 @@ import java.util.List;
 public class DictController extends CommonController<Dict> {
     @Autowired
     private DictService dictService;
-
+    /**
+     * 批量删除字典信息
+     * @param ids
+     * @return
+     */
+    @PostMapping("/deleteBatchByIds")
+    public ResultData deleteBatchByIds(@RequestBody List<Integer> ids){
+        Integer deleteBatchByIds = dictService.deleteBatchByIds(ids);
+        if (deleteBatchByIds>0){
+            return deleteSuccess("批量删除成功");
+        }
+        return deleteFailed("批量删除失败");
+    }
     @GetMapping("/selectAll")
     public ResultData selectAllDict(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage , @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize, @RequestParam String tableName, @RequestParam String fieldName, @RequestParam String keyy){
         List<Dict> dicts = dictService.selectAllDict(curpage, pagesize, tableName, fieldName, keyy);

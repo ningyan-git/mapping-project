@@ -18,7 +18,14 @@ import java.util.Map;
 public class DeptService  extends BaseService<Dept> {
     @Autowired
     private DeptMapper deptMapper;
-
+    /**
+     * 批量删除部门信息
+     * @param ids
+     * @return
+     */
+    public Integer deleteBatchByIds(List<Integer> ids){
+        return deptMapper.deleteBachById(ids);
+    }
     /**
      * 查询部门
      * @return

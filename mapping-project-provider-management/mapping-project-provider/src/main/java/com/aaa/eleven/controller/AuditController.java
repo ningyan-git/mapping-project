@@ -4,7 +4,6 @@ import com.aaa.eleven.base.BaseService;
 import com.aaa.eleven.base.CommonController;
 import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.Audit;
-import com.aaa.eleven.model.Score;
 import com.aaa.eleven.service.AuditService;
 import com.aaa.eleven.service.MappingUnitService;
 import com.github.pagehelper.PageInfo;
@@ -35,6 +34,7 @@ public class AuditController extends CommonController<Audit> {
      * @Author ftt
      * @Description
      * 查看审核记录
+     *  单位审核  根据 unitName 查看审核记录
      * @Date 2020/7/17 15:24
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData
@@ -52,7 +52,9 @@ public class AuditController extends CommonController<Audit> {
     /***
      * @Author ftt
      * @Description
-     * 分页 + 单位未审核查询 + 模糊
+     * 分页 + 单位查询 + 模糊
+     *      单位审核
+     *          单位列表(已审核)
      * @Date 2020/7/17 15:24
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData
@@ -69,7 +71,29 @@ public class AuditController extends CommonController<Audit> {
     /***
      * @Author ftt
      * @Description
+     * 分页 + 单位查询 + 模糊
+     *      单位审核
+     *          单位列表(已审核)
+     * @Date 2020/7/17 15:24
+     * @Param [map]
+     * @return com.aaa.eleven.base.ResultData
+     */
+    @GetMapping("/audit/selectMappingUnitAuditListByStatus")
+    public ResultData selectMappingUnitAuditListByStatus(@RequestParam Map map){
+        //todo
+        PageInfo<Audit> pageInfo = auditService.selectMappingUnitAuditListbyStatus(map);
+        if(pageInfo != null){
+            return selectSuccess(pageInfo);
+        }else {
+            return selectFailed();
+        }
+    }
+    /***
+     * @Author ftt
+     * @Description
      * 单位注册待审核
+     *  列表
+     *   模糊 + 分页
      * @Date 2020/7/17 15:24
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData
@@ -87,7 +111,7 @@ public class AuditController extends CommonController<Audit> {
      * @Author ftt
      * @Description
      * 修改单位审核状态
-     *
+     *   单位修改待审核的操作
      * @Date 2020/7/17 21:59
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData
@@ -105,6 +129,7 @@ public class AuditController extends CommonController<Audit> {
      * @Author ftt
      * @Description
      * 单位注册待审核
+     *      单位注册待审核 的操作
      * @Date 2020/7/18 8:57
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData

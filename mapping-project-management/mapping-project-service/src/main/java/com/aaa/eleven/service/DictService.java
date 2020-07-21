@@ -25,6 +25,14 @@ public class DictService extends BaseService<Dict> {
     @Autowired
     private DictMapper dictMapper;
     /**
+     * 批量删除字典信息
+     * @param ids
+     * @return
+     */
+    public Integer deleteBatchByIds(List<Integer> ids){
+        return dictMapper.deleteBachById(ids);
+    }
+    /**
      * 查询
      * @return
      */

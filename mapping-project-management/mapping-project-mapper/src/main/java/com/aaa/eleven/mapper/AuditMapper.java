@@ -18,12 +18,21 @@ public interface AuditMapper extends Mapper<Audit> {
      * @Param [unitName]
      * @return java.util.List<com.aaa.eleven.model.Audit>
      */
-    @Select("select ta.*,tmu.* from t_audit ta, t_mapping_unit tmu where ta.ref_id = tmu.id and tmu.unit_name = #{unitName}")
+
     List<Audit> selectAuditRecordList(@Param("unitName") String unitName);
     /***
      * @Author ftt
      * @Description
      * 单位未审核查询 + 模糊
+     * @Date 2020/7/17 20:52
+     * @Param [unitName]
+     * @return java.util.List
+     */
+    List<MappingUnit> selectMappingUnitAuditListByStatus(@Param("unitName") String unitName);
+    /***
+     * @Author ftt
+     * @Description
+     * 单位已审核查询 + 模糊
      * @Date 2020/7/17 20:52
      * @Param [unitName]
      * @return java.util.List

@@ -28,7 +28,19 @@ public class NewsController extends CommonController<News> {
     public BaseService<News> getBaseService() {
         return newsService;
     }
-
+    /**
+     * 批量删除新闻信息
+     * @param ids
+     * @return
+     */
+    @PostMapping("/deleteBatchByIds")
+    public ResultData deleteBatchByIds(@RequestBody List<Integer> ids){
+        Integer deleteBatchByIds = newsService.deleteBatchByIds(ids);
+        if (deleteBatchByIds>0){
+            return deleteSuccess("批量删除成功");
+        }
+        return deleteFailed("批量删除失败");
+    }
     @GetMapping("/selectAll")
     public ResultData selectAllNews(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage , @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize,@RequestParam String title){
 

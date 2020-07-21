@@ -54,7 +54,7 @@ public class AuditService extends BaseService<Audit> {
     /***
      * @Author ftt
      * @Description
-     * 分页 + 单位未审核查询 + 模糊
+     * 分页 + 单位已审核查询 + 模糊
      * @Date 2020/7/17 20:48
      * @Param [map]
      * @return com.github.pagehelper.PageInfo
@@ -68,6 +68,29 @@ public class AuditService extends BaseService<Audit> {
              unitName = map.get("unitName").toString();
         }
         List<MappingUnit> list = auditMapper.selectMappingUnitAuditList(unitName);
+        if(list != null && list.size() > 0){
+            PageInfo<MappingUnit> pageInfo = new PageInfo<MappingUnit>(list);
+            return pageInfo;
+        }
+        return null;
+    }
+    /***
+     * @Author ftt
+     * @Description
+     * 分页 + 单位未审核查询 + 模糊
+     * @Date 2020/7/17 20:48
+     * @Param [map]
+     * @return com.github.pagehelper.PageInfo
+     */
+    public PageInfo selectMappingUnitAuditListbyStatus(Map map){
+        int  pageNum = Integer.parseInt(map.get("pageNum").toString());
+        int  pageSize = Integer.parseInt(map.get("pageSize").toString());
+        PageHelper.startPage(pageNum,pageSize);
+        String unitName = null;
+        if(null != map.get("unitName")){
+            unitName = map.get("unitName").toString();
+        }
+        List<MappingUnit> list = auditMapper.selectMappingUnitAuditListByStatus(unitName);
         if(list != null && list.size() > 0){
             PageInfo<MappingUnit> pageInfo = new PageInfo<MappingUnit>(list);
             return pageInfo;

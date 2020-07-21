@@ -17,13 +17,13 @@
     <result column="create_time" property="createTime" jdbcType="DATE" />
   </resultMap>
     <select id="selectMappingUnitAuditList" resultType="com.aaa.eleven.model.MappingUnit">
-      SELECT tm.* FROM `t_mapping_unit`tm,t_audit ta
+      select ta.*,tmu.* from t_audit ta, t_mapping_unit tmu
       <where>
-        tm.audit_status=2 and ta.ref_id =tm.id
+        ta.ref_id = tmu.id
         <if test="unitName != null">
-          and
-          tm.unit_name like CONCAT('%','江城区','%')
+          and tmu.unit_name like concat('%',#{unitName},'%')
         </if>
+        and tmu.audit_status=0
       </where>
     </select>
   <select id="selectAuditForUnitInfo" resultType="com.aaa.eleven.model.MappingUnit">
@@ -32,7 +32,27 @@
     on a.id=b.user_id
     where a.status=0
     <if test="unitName != null">
-      and b.unit_name=#{unitName}
+      and b.unit_name like concat('%',#{unitName},'%')
     </if>
+  </select>
+    <select id="selectAuditRecordList" resultType="com.aaa.eleven.model.Audit">
+      select ta.*,tmu.* from t_audit ta, t_mapping_unit tmu
+      <where>
+        ta.ref_id = tmu.id
+        <if test="unitName != null">
+          and tmu.unit_name like concat('%',#{unitName},'%')
+        </if>
+        and tmu.audit_status=2
+      </where>
+    </select>
+  <select id="selectMappingUnitAuditListByStatus" resultType="com.aaa.eleven.model.MappingUnit">
+    select ta.*,tmu.* from t_audit ta, t_mapping_unit tmu
+    <where>
+      ta.ref_id = tmu.id
+      <if test="unitName != null">
+        and tmu.unit_name like concat('%',#{unitName},'%')
+      </if>
+      and tmu.audit_status=2
+    </where>
   </select>
 </mapper>

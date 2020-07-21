@@ -24,6 +24,14 @@ public class NewsService extends BaseService<News> {
     @Autowired
     private NewsMapper newsMapper;
     /**
+     * 批量删除新闻信息
+     * @param ids
+     * @return
+     */
+    public Integer deleteBatchByIds(List<Integer> ids){
+        return newsMapper.deleteBachById(ids);
+    }
+    /**
      * 查询
      * @return
      */

@@ -12,7 +12,13 @@
     <result column="gmt_modified" property="gmtModified" jdbcType="DATE" />
     <result column="body" property="body" jdbcType="LONGVARCHAR" />
   </resultMap>
-  <select id="selectAllNews" resultMap="BaseResultMap">
+  <delete id="deleteBachById" parameterType="list">
+    delete from t_news where id in
+    <foreach collection="list" item="item" open="("  separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+    <select id="selectAllNews" resultMap="BaseResultMap">
     select * from t_news
     <where>
       <if test="title != null">
