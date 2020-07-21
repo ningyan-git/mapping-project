@@ -33,8 +33,8 @@ public class NewsController extends CommonController<News> {
      * @param ids
      * @return
      */
-    @PostMapping("/deleteBatchByIds")
-    public ResultData deleteBatchByIds(@RequestBody List<Integer> ids){
+    @PostMapping("/deleteBatchNewsByIds")
+    public ResultData deleteBatchNewsByIds(@RequestBody List<Integer> ids){
         Integer deleteBatchByIds = newsService.deleteBatchByIds(ids);
         if (deleteBatchByIds>0){
             return deleteSuccess("批量删除成功");
@@ -52,17 +52,6 @@ public class NewsController extends CommonController<News> {
     }
     @PostMapping("/addNews")
     public ResultData addNews(@RequestBody News news){
-        /*if (news.getTitle()==null){
-            return insertFailed("Title 必须要传参");
-        }
-         if (news.getDigest() ==null){
-             return insertFailed("digest 必须要传参");
-         }
-         if (news.getGmtCreate() == null){
-             return insertFailed("gmtcreate 必须要传参");
-         }*/
-
-
         Boolean aBoolean = newsService.addNews(news);
 
         if (aBoolean){

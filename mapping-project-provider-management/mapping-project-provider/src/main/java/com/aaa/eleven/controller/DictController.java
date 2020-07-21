@@ -28,14 +28,24 @@ public class DictController extends CommonController<Dict> {
      * @param ids
      * @return
      */
-    @PostMapping("/deleteBatchByIds")
-    public ResultData deleteBatchByIds(@RequestBody List<Integer> ids){
+    @PostMapping("/deleteBatchDictByIds")
+    public ResultData deleteBatchDictByIds(@RequestBody List<Integer> ids){
         Integer deleteBatchByIds = dictService.deleteBatchByIds(ids);
         if (deleteBatchByIds>0){
             return deleteSuccess("批量删除成功");
         }
         return deleteFailed("批量删除失败");
     }
+
+    /**
+     * 分页 + 模糊 + 查询所有
+     * @param curpage
+     * @param pagesize
+     * @param tableName
+     * @param fieldName
+     * @param keyy
+     * @return
+     */
     @GetMapping("/selectAll")
     public ResultData selectAllDict(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage , @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize, @RequestParam String tableName, @RequestParam String fieldName, @RequestParam String keyy){
         List<Dict> dicts = dictService.selectAllDict(curpage, pagesize, tableName, fieldName, keyy);
@@ -44,6 +54,12 @@ public class DictController extends CommonController<Dict> {
         }
         return selectFailed();
     }
+
+    /**
+     * 新增字典表信息
+     * @param dict
+     * @return
+     */
     @PostMapping("/addDict")
     public ResultData addDict(@RequestBody Dict dict){
         if (dict.getFieldName()==null){
@@ -64,6 +80,12 @@ public class DictController extends CommonController<Dict> {
         }
         return insertFailed();
     }
+
+    /**
+     * 修改字典表
+     * @param dict
+     * @return
+     */
     @RequestMapping("/updateDict")
     public ResultData updateDict(@RequestBody Dict dict){
         Boolean aBoolean = dictService.updateDict(dict);
@@ -72,6 +94,12 @@ public class DictController extends CommonController<Dict> {
         }
         return updateFailed();
     }
+
+    /**
+     * 删除字典表信息
+     * @param dict
+     * @return
+     */
     @RequestMapping("/deleteDict")
     public ResultData deleteDict(@RequestBody Dict dict){
         Boolean aBoolean = dictService.deleteDict(dict);

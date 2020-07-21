@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Company
@@ -15,58 +16,60 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("/dept")
 public class DeptController {
-   /* @Autowired
+    @Autowired
     private MappingProjectService mappingProjectService;
+    /**
+     * 批量删除部门信息
+     * @param ids
+     * @return
+     */
+    @PostMapping("/dept/deleteBatchByIds")
+    public ResultData deleteBatchByIds(@RequestBody List<Integer> ids){
+        return mappingProjectService.deleteBatchByIds(ids);
+    }
 
-    *//**
-     * 模糊查询分页，部门
+    /**
+     * 查询所有部门信息
      * @param curpage
      * @param pagesize
      * @param deptName
      * @return
-     *//*
-    @GetMapping("/selectAll")
+     */
+    @GetMapping("/dept/selectAll")
     public ResultData selectAllDept(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage , @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize,@RequestParam(value = "deptName",required = false,defaultValue = "") String deptName){
-        ResultData depts = mappingProjectService.selectAllDept(curpage,pagesize,deptName);
-        System.out.println(depts);
-        return depts;
+        return mappingProjectService.selectAllDept(curpage,pagesize,deptName);
     }
 
-    *//**
-     * 添加部门
+    /**
+     * 新增部门信息
      * @param dept
      * @return
-     *//*
-    @PostMapping("/addDept")
+     */
+    @PostMapping("/dept/addDept")
     public ResultData addDept(@RequestBody Dept dept){
-        ResultData aBoolean = mappingProjectService.addDept(dept);
-        return aBoolean;
+        return mappingProjectService.addDept(dept);
     }
 
-    *//**
-     * 更新部门
+    /**
+     * 修改部门信息
      * @param dept
      * @return
-     *//*
-    @RequestMapping("/updateDept")
+     */
+    @RequestMapping("/dept/updateDept")
     public ResultData updateDetp(@RequestBody Dept dept){
-        ResultData aBoolean = mappingProjectService.updateDetp(dept);
-        return aBoolean;
+        return mappingProjectService.updateDetp(dept);
     }
 
-    *//**
-     * 删除部门
+    /**
+     * 修改部门信息
      * @param dept
      * @return
-     *//*
-    @RequestMapping("/deleteDept")
+     */
+    @RequestMapping("/dept/deleteDept")
     public ResultData deleteDept(@RequestBody Dept dept){
-        ResultData aBoolean = mappingProjectService.deleteDept(dept);
-        return aBoolean;
+        return mappingProjectService.deleteDept(dept);
     }
-*/
 
 
 

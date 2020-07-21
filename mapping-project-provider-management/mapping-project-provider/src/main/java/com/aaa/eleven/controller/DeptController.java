@@ -40,6 +40,14 @@ public class DeptController extends CommonController<Dept> {
         }
         return deleteFailed("批量删除失败");
     }
+
+    /**
+     * 查询所有部门信息
+     * @param curpage
+     * @param pagesize
+     * @param deptName
+     * @return
+     */
     @GetMapping("/selectAll")
     public ResultData selectAllDept(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage , @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize,@RequestParam(value = "deptName",required = false,defaultValue = "") String deptName){
         List<Map<String, Object>> depts = deptService.selectAllDept(curpage,pagesize,deptName);
@@ -48,6 +56,12 @@ public class DeptController extends CommonController<Dept> {
         }
         return selectFailed();
     }
+
+    /**
+     * 新增部门信息
+     * @param dept
+     * @return
+     */
     @PostMapping("/addDept")
     public ResultData addDept(@RequestBody Dept dept){
         if (dept.getParentId() == null){
@@ -62,6 +76,12 @@ public class DeptController extends CommonController<Dept> {
         }
         return insertFailed();
     }
+
+    /**
+     * 修改部门信息
+     * @param dept
+     * @return
+     */
     @RequestMapping("/updateDept")
     public ResultData updateDetp(@RequestBody Dept dept){
         Boolean aBoolean = deptService.updateDept(dept);
@@ -70,6 +90,12 @@ public class DeptController extends CommonController<Dept> {
         }
         return updateFailed();
     }
+
+    /**
+     * 修改部门信息
+     * @param dept
+     * @return
+     */
     @RequestMapping("/deleteDept")
     public ResultData deleteDept(@RequestBody Dept dept){
         Boolean aBoolean = deptService.deleteDept(dept);
@@ -78,7 +104,4 @@ public class DeptController extends CommonController<Dept> {
         }
         return deleteFailed();
     }
-
-
-
 }

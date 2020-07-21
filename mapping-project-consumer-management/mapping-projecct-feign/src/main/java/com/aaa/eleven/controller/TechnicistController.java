@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Company
@@ -28,7 +29,8 @@ public class TechnicistController {
      */
     @GetMapping("/technicist/selectTechnicistListByUserId")
     public ResultData selectTechnicistListByUserId(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage, @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize,@RequestParam("userId") long userId){
-        return mappingProjectService.selectTechnicistListByUserId(curpage,pagesize,userId);
+        return mappingProjectService.selectTechnicistListByUserId(curpage, pagesize, userId);
+
     }
     /***
      * @Author ftt
@@ -65,6 +67,7 @@ public class TechnicistController {
     @PostMapping("/technicist/updateTechnicist")
     public ResultData updateTechnicist(@RequestBody Technicist technicist){
         return mappingProjectService.updateTechnicist(technicist);
+
     }
     /***
      * @Author ftt

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Company
@@ -28,7 +29,7 @@ public class PrincipalController {
      */
     @GetMapping("/principal/selectPrincipalListByUserId")
     public ResultData selectPrincipalListByUserId(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage, @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize,@RequestParam("userId") long userId){
-        return mappingProjectService.selectPrincipalListByUserId(curpage,pagesize,userId);
+       return mappingProjectService.selectPrincipalListByUserId(curpage, pagesize, userId);
     }
     /***
      * @Author ftt
@@ -41,6 +42,7 @@ public class PrincipalController {
     @GetMapping("/principal/selectPrincipalDetail")
     public ResultData selectPrincipalDetail(@RequestParam("id") Long id){
         return mappingProjectService.selectPrincipalDetail(id);
+
     }
     /***
      * @Author ftt
@@ -53,6 +55,7 @@ public class PrincipalController {
     @PostMapping("/principal/insertPrincipal")
     public ResultData insertPrincipal(@RequestBody Principal principal){
         return mappingProjectService.insertPrincipal(principal);
+
     }
     /***
      * @Author ftt
@@ -65,6 +68,7 @@ public class PrincipalController {
     @PostMapping("/principal/updatePrincipal")
     public ResultData updatePrincipal(@RequestBody Principal principal){
         return mappingProjectService.updatePrincipal(principal);
+
     }
     /***
      * @Author ftt
@@ -77,5 +81,6 @@ public class PrincipalController {
     @PostMapping("/principal/deletePrincipal")
     public ResultData deletePrincipal(@RequestBody Principal principal){
         return mappingProjectService.deletePrincipal(principal);
+
     }
 }

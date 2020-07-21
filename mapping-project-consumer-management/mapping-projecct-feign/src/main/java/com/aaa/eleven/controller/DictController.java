@@ -16,57 +16,62 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("/dict")
 public class DictController {
-/*
+
     @Autowired
     private MappingProjectService mappingProjectService;
+    /**
+     * 批量删除字典信息
+     * @param ids
+     * @return
+     */
+    @PostMapping("/dict/deleteBatchDictByIds")
+    public ResultData deleteBatchDictByIds(@RequestBody List<Integer> ids){
+        return mappingProjectService.deleteBatchDictByIds(ids);
+    }
 
-    *//**
-     * 查询所有字典
+    /**
+     * 分页 + 模糊 + 查询所有
      * @param curpage
      * @param pagesize
      * @param tableName
      * @param fieldName
      * @param keyy
      * @return
-     *//*
-    @GetMapping("/selectAll")
-    public ResultData selectAllDict(@RequestParam int curpage , @RequestParam int pagesize, @RequestParam String tableName, @RequestParam String fieldName, @RequestParam String keyy){
-        ResultData resultData = mappingProjectService.selectAllDict(curpage, pagesize, tableName, fieldName, keyy);
-        return resultData;
+     */
+    @GetMapping("/dict/selectAll")
+    public ResultData selectAllDict(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage , @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize, @RequestParam String tableName, @RequestParam String fieldName, @RequestParam String keyy){
+        return mappingProjectService.selectAllDict(curpage,pagesize,tableName,fieldName,keyy);
     }
 
-    *//**
-     * 添加字典
+    /**
+     * 新增字典表信息
      * @param dict
      * @return
-     *//*
-    @PostMapping("/addDict")
+     */
+    @PostMapping("/dict/addDict")
     public ResultData addDict(@RequestBody Dict dict){
-        ResultData resultData = mappingProjectService.addDict(dict);
-        return resultData;
+        return mappingProjectService.addDict(dict);
     }
 
-    *//**
-     * 根据id更新字典
+    /**
+     * 修改字典表
      * @param dict
      * @return
-     *//*
-    @RequestMapping("/updateDict")
+     */
+    @RequestMapping("/dict/updateDict")
     public ResultData updateDict(@RequestBody Dict dict){
-        ResultData aBoolean = mappingProjectService.updateDict(dict);
-        return aBoolean;
+        return mappingProjectService.updateDict(dict);
     }
 
-    *//**
-     * 删除
+    /**
+     * 删除字典表信息
      * @param dict
      * @return
-     *//*
-    @RequestMapping("/deleteDict")
+     */
+    @RequestMapping("/dict/deleteDict")
     public ResultData deleteDict(@RequestBody Dict dict){
-        ResultData aBoolean = mappingProjectService.deleteDict(dict);
-        return aBoolean;
-    }*/
+        return mappingProjectService.deleteDict(dict);
+    }
+
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Company
@@ -28,8 +29,9 @@ public class SpecialPostController {
      */
     @GetMapping("/specialPost/selectSpecialPostListByUserId")
     public ResultData selectSpecialPostListByUserId(@RequestParam(value = "curpage",required = false,defaultValue = "1")int curpage, @RequestParam(value = "pagesize",required = false,defaultValue = "5")int pagesize,@RequestParam("userId") long userId){
-        return mappingProjectService.selectSpecialPostListByUserId(curpage,pagesize,userId);
+       return mappingProjectService.selectSpecialPostListByUserId(curpage, pagesize, userId);
     }
+
     /***
      * @Author ftt
      * @Description
@@ -65,6 +67,7 @@ public class SpecialPostController {
     @PostMapping("/specialPost/updateSpecialPost")
     public ResultData updateSpecialPost(@RequestBody SpecialPost specialPost){
         return mappingProjectService.updateSpecialPost(specialPost);
+
     }
     /***
      * @Author ftt
@@ -77,5 +80,6 @@ public class SpecialPostController {
     @PostMapping("/specialPost/deleteSpecialPost")
     public ResultData deleteSpecialPost(@RequestBody SpecialPost specialPost){
         return mappingProjectService.deleteSpecialPost(specialPost);
+
     }
 }
