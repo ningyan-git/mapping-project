@@ -11,6 +11,7 @@ import com.aaa.eleven.service.ScoreService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,9 +66,9 @@ public class ScoreController extends CommonController<Score> {
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData
      */
-    @GetMapping("/score/updateScoreMultiTables")
-    public ResultData updateScoreMultiTables(@RequestParam Map map, MultipartFile file,String filename){
-        Boolean flag = scoreService.updateScore(map,file,filename,uploadService, resourceService, mappingUnitService);
+    @PostMapping("/score/updateScoreMultiTables")
+    public ResultData updateScoreMultiTables(@RequestParam Map map, MultipartFile file){
+        Boolean flag = scoreService.updateScore(map,file,uploadService, resourceService, mappingUnitService);
         if(false){
             return updateSuccess();
         }else {

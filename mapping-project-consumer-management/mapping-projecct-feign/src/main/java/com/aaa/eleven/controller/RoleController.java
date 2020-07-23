@@ -4,10 +4,7 @@ import com.aaa.eleven.base.ResultData;
 import com.aaa.eleven.model.Role;
 import com.aaa.eleven.service.MappingProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +32,7 @@ public class RoleController {
      * @Date: 2020/7/18 0018 9:23
      */
     @GetMapping("/selectAllRoleByCondition")
-    public ResultData selectAllRoleByCondition(String roleName, String startTime, String endTime){
+    public ResultData selectAllRoleByCondition(@RequestParam("roleName") String roleName,@RequestParam("startTime") String startTime,@RequestParam("endTime") String endTime){
        return mappingProjectService.selectAllRoleByCondition(roleName, startTime, endTime);
     }
     /**
@@ -62,7 +59,7 @@ public class RoleController {
      * @Date: 2020/7/18 0018 16:26
      */
     @PostMapping("/updateRoleJurisdiction")
-    public ResultData updateRoleJurisdiction(Long roleId, Integer[] menuIds){
+    public ResultData updateRoleJurisdiction(@RequestParam("roleId") Long roleId,@RequestParam("menuIds") Integer[] menuIds){
         return mappingProjectService.updateRoleJurisdiction(roleId, menuIds);
 
     }
@@ -76,7 +73,7 @@ public class RoleController {
      * @Date: 2020/7/19 0019 11:44
      */
     @PostMapping("/insertRole")
-    public ResultData insertRole(Role role, Integer[] ids)
+    public ResultData insertRole(@RequestBody Role role, @RequestParam("ids") Integer[] ids)
     {
         return mappingProjectService.insertRole(role, ids);
 

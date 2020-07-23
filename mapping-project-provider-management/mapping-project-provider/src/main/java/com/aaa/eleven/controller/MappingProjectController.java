@@ -109,7 +109,7 @@ public class MappingProjectController extends CommonController<MappingProject> {
      * @Author: zh
      * @Date: 2020/7/16 0016 18:35
      */
-    @PutMapping("/updateMappingProject")
+    @PostMapping("/updateMappingProject")
     public ResultData updateMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
         System.out.println(mappingProjectAndResultCommitVo);
         int list = mappingProjectService.updateMappingProjectById(mappingProjectAndResultCommitVo,uploadService,resourceService);
@@ -118,9 +118,9 @@ public class MappingProjectController extends CommonController<MappingProject> {
             return super.updateSuccess(UPDATE_SUCCESS.getMsg());
         }else
         {
-            super.updateFailed(UPDATE_FAILED.getMsg());
+            return super.updateFailed(UPDATE_FAILED.getMsg());
         }
-        return null;
+
     }
     /**
      * 功能描述: <br>
@@ -182,7 +182,7 @@ public class MappingProjectController extends CommonController<MappingProject> {
      * @Date: 2020/7/17 0017 11:14
      */
     @GetMapping("/selectMappingProjectByProjectNameAndProjectTypeAndStartDate")
-    public ResultData selectMappingProjectByProjectNameAndProjectTypeAndStartDate(String projectName,String projectType,String startDate){
+    public ResultData selectMappingProjectByProjectNameAndProjectTypeAndStartDate(@RequestParam String projectName,@RequestParam String projectType,@RequestParam String startDate){
         List<Map<String, Object>> maps = mappingProjectService.selectMappingProjectByProjectNameAndProjectTypeAndStartDate(projectName, projectType, startDate);
         if(maps.size()>0)
         {

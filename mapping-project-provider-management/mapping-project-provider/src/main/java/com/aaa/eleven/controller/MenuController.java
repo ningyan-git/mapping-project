@@ -31,7 +31,7 @@ public class MenuController extends CommonController<Menu> {
      * @Date: 2020/7/17 0017 17:00
      */
     @PostMapping("/selectFirstMenu")
-    public ResultData selectFirstMenu(String menuName, String startTime, String endTime){
+    public ResultData selectFirstMenu(@RequestParam String menuName,@RequestParam String startTime,@RequestParam String endTime){
         List<Map<String, Object>> maps = menuService.selectFirstMenu(menuName, startTime, endTime);
         if(maps.size()>0)
         {

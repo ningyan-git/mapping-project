@@ -152,7 +152,7 @@ public class MappingUnitController {
      * @Date: 2020/7/17 0017 10:08
      */
     @GetMapping("/selectByUnitNameAndOwnedDistrictAndQualificationLevel")
-    public ResultData selectByUnitNameAndOwnedDistrictAndQualificationLevel(String unitName,String ownedDistrict,String qualificationLevel){
+    public ResultData selectByUnitNameAndOwnedDistrictAndQualificationLevel(@RequestParam("unitName") String unitName,@RequestParam("ownedDistrict") String ownedDistrict,@RequestParam("qualificationLevel") String qualificationLevel){
         return mappingProjectService.selectByUnitNameAndOwnedDistrictAndQualificationLevel(unitName, ownedDistrict, qualificationLevel);
 
     }

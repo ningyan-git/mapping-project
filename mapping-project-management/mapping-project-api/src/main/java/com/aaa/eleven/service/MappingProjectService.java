@@ -350,7 +350,7 @@ public interface MappingProjectService {
      * @Date: 2020/7/17 0017 8:52
      */
     @PostMapping("/insertMappingProject")
-    public ResultData insertMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo);
+    public ResultData insertMappingProject(@RequestBody MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo);
     /**
      * 功能描述: <br>
      *@Description
@@ -381,7 +381,7 @@ public interface MappingProjectService {
      * @Date: 2020/7/17 0017 11:14
      */
     @GetMapping("/selectMappingProjectByProjectNameAndProjectTypeAndStartDate")
-    public ResultData selectMappingProjectByProjectNameAndProjectTypeAndStartDate(String projectName,String projectType,String startDate);
+    public ResultData selectMappingProjectByProjectNameAndProjectTypeAndStartDate(@RequestParam String projectName,@RequestParam String projectType,@RequestParam String startDate);
 
     /**
      * 功能描述: <br>
@@ -572,7 +572,7 @@ public interface MappingProjectService {
      * @Date: 2020/7/17 0017 10:08
      */
     @GetMapping("/selectByUnitNameAndOwnedDistrictAndQualificationLevel")
-    public ResultData selectByUnitNameAndOwnedDistrictAndQualificationLevel(String unitName,String ownedDistrict,String qualificationLevel);
+    public ResultData selectByUnitNameAndOwnedDistrictAndQualificationLevel(@RequestParam String unitName,@RequestParam String ownedDistrict,@RequestParam String qualificationLevel);
 
     /**
      * 功能描述: <br>
@@ -617,7 +617,7 @@ public interface MappingProjectService {
      * @Date: 2020/7/17 0017 17:00
      */
     @PostMapping("/selectFirstMenu")
-    public ResultData selectFirstMenu(String menuName, String startTime, String endTime);
+    public ResultData selectFirstMenu(@RequestParam String menuName,@RequestParam String startTime,@RequestParam String endTime);
     /**
      * 功能描述: <br>
      *@Description
@@ -780,7 +780,7 @@ public interface MappingProjectService {
      * @Date: 2020/7/18 0018 9:23
      */
     @GetMapping("/selectAllRoleByCondition")
-    public ResultData selectAllRoleByCondition(String roleName, String startTime, String endTime);
+    public ResultData selectAllRoleByCondition(@RequestParam String roleName,@RequestParam String startTime,@RequestParam String endTime);
     /**
      * 功能描述: <br>
      *@Description
@@ -813,7 +813,7 @@ public interface MappingProjectService {
      * @Date: 2020/7/19 0019 11:44
      */
     @PostMapping("/insertRole")
-    public ResultData insertRole(Role role, Integer[] ids);
+    public ResultData insertRole(@RequestBody Role role, Integer[] ids);
     /**
      * 功能描述: <br>
      *@Description
@@ -846,8 +846,8 @@ public interface MappingProjectService {
      * @Param [map]
      * @return com.aaa.eleven.base.ResultData
      */
-    @GetMapping("/score/updateScoreMultiTables")
-    public ResultData updateScoreMultiTables(@RequestParam Map map, MultipartFile file, String filename);
+    @PostMapping("/score/updateScoreMultiTables")
+    public ResultData updateScoreMultiTables(@RequestParam Map map, MultipartFile file,@RequestParam String filename);
     /***
      * @Author ftt
      * @Description

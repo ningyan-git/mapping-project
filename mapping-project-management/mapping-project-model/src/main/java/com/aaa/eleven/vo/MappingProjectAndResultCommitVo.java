@@ -2,6 +2,7 @@ package com.aaa.eleven.vo;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -21,25 +22,24 @@ public class MappingProjectAndResultCommitVo implements Serializable {
     private Long result_id;
     private String result_plotting_scale;
     private String result_medium_type;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date result_date;
     private String result_name;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date result_create_date;
     /**
      * 范围线文件
      */
-    private MultipartFile rangetFile;
-    /**
-     * 范围线文件名
-     */
-    private String rangeFileName;
+    private MultipartFile[] rangetFile;
     /**
      * 合同文件
      */
-    private MultipartFile contractFile;
+    private MultipartFile[] contractFile;
     /**
-     * 合同文件名
+     * 展示在前端的附件id
      */
-    private String contractFileName;
+    private Long[] ResourceIds;
+
     public Long getMapping_id() {
         return mapping_id;
     }

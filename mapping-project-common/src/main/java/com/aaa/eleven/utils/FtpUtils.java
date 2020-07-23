@@ -38,7 +38,7 @@ public class FtpUtils {
             //检测上传目录是否存在
             // basePath:/home/ftp/www
             // filePath: /2020/07/10
-            // --->/home/ftp/www/2020/07/10
+            // --->/home/ftp/2020/07/10
             if(!ftpClient.changeWorkingDirectory(basePath+filePath)){
                 //文件夹并不存在
                 //创建文件夹
@@ -65,7 +65,7 @@ public class FtpUtils {
                     }
                 }
             }
-            //把问津转换为二进制的形式进行上传
+            //文件转换为二进制的形式进行上传
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             //文件真正上传
             if(!ftpClient.storeFile(fileName,inputStream)){

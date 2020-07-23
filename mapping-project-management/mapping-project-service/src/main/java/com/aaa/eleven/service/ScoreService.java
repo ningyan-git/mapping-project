@@ -62,7 +62,7 @@ public class ScoreService extends BaseService<Score> {
      * mapping-unit id -->score字段
      * resource
      */
-    public Boolean updateScore(Map map, MultipartFile file, String fileName, UploadService uploadService, ResourceService resourceService, MappingUnitService mappingUnitService){
+    public Boolean updateScore(Map map, MultipartFile file,  UploadService uploadService, ResourceService resourceService, MappingUnitService mappingUnitService){
         if(map.get("unit_id") != null){
             long id = Long.parseLong(map.get("unit_id").toString());
             //对象
@@ -76,10 +76,11 @@ public class ScoreService extends BaseService<Score> {
             }else {
                 return false;
             }
-            if(PLUS.equals(map.get(PLUS))){
+            if(PLUS.equals(map.get("sign"))){
                 score.setScorePlus(scoreValue1);
                 scoreValue2 += scoreValue1;
-            }else if(SUBTRACT.equals(map.get(SUBTRACT))){
+
+            }else if(SUBTRACT.equals(map.get("sign"))){
                 score.setScoreSubtract(scoreValue1);
                 scoreValue2 -= scoreValue1;
             }else {
@@ -87,7 +88,10 @@ public class ScoreService extends BaseService<Score> {
             }
             score.setCreateTime(new Date());
             score.setUnitId(id);
-            score.setReason(map.get(REASON).toString());
+            if(map.get(REASON) != null){
+                score.setReason(map.get(REASON).toString());
+            }
+            score.setId(Long.parseLong(FileNameUtils.getFileName()));
             Integer i1 = insert(score);
             //修改mapping_unit表的数据
             MappingUnit mappingUnit = new MappingUnit();
@@ -104,8 +108,8 @@ public class ScoreService extends BaseService<Score> {
             Integer i2 = mappingUnitService.update(mappingUnit);
             Resource resource1 = new Resource();
             //文件上传
-            if(file != null && fileName != null){
-                FtpFile ftpFile = uploadService.upload(file, fileName);
+            if(file != null ){
+                FtpFile ftpFile = uploadService.upload(file, null);
                 resource1.setId(Long.parseLong(FileNameUtils.getFileName()));
                 resource1.setRefBizId(id);
                 resource1.setRefBizType("附件");

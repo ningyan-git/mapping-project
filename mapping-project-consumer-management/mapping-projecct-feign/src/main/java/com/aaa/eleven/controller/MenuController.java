@@ -32,7 +32,7 @@ public class MenuController {
      * @Date: 2020/7/17 0017 17:00
      */
     @PostMapping("/selectFirstMenu")
-    public ResultData selectFirstMenu(String menuName, String startTime, String endTime){
+    public ResultData selectFirstMenu(@RequestParam("menuName") String menuName,@RequestParam("startTime") String startTime,@RequestParam("endTime") String endTime){
        return mappingProjectService.selectFirstMenu(menuName, startTime, endTime);
     }
     /**
@@ -45,7 +45,7 @@ public class MenuController {
      * @Date: 2020/7/17 0017 17:15
      */
     @PostMapping("/selectSecondMenu")
-    public ResultData selectSecond(Menu menu){
+    public ResultData selectSecond(@RequestBody Menu menu){
         return mappingProjectService.selectSecond(menu);
 
     }
@@ -59,7 +59,7 @@ public class MenuController {
      * @Date: 2020/7/17 0017 19:45
      */
     @PostMapping("/insertMenu")
-    public ResultData insertMenu(Menu menu){
+    public ResultData insertMenu(@RequestBody Menu menu){
         return mappingProjectService.insertMenu(menu);
 
     }
@@ -73,12 +73,12 @@ public class MenuController {
      * @Date: 2020/7/17 0017 19:53
      */
     @PutMapping("/updateMenu")
-    public ResultData updateMenu(Menu menu){
+    public ResultData updateMenu(@RequestBody Menu menu){
         return mappingProjectService.updateMenu(menu);
 
     }
     @DeleteMapping("/deleteMenu")
-    public ResultData deleteMenu(Menu menu){
+    public ResultData deleteMenu(@RequestBody Menu menu){
         return mappingProjectService.deleteMenu(menu);
 
     }
@@ -106,7 +106,7 @@ public class MenuController {
      * @Date: 2020/7/18 0018 16:30
      */
     @PostMapping("/selectChildNode")
-    public ResultData selectChildNode(Long menuId){
+    public ResultData selectChildNode(@RequestParam("id") Long menuId){
         return mappingProjectService.selectChildNode(menuId);
 
     }
@@ -134,7 +134,7 @@ public class MenuController {
      * @Date: 2020/7/19 0019 14:54
      */
     @GetMapping("/selectParentMenu")
-    public ResultData selectParentMenu(Menu menu){
+    public ResultData selectParentMenu(@RequestBody Menu menu){
         return mappingProjectService.selectParentMenu(menu);
 
     }

@@ -80,7 +80,7 @@ public class MappingProjectController {
      * @Date: 2020/7/16 0016 18:35
      */
     @PutMapping("/updateMappingProject")
-    public ResultData updateMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
+    public ResultData updateMappingProject(@RequestParam MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
        return mappingProjectService.updateMappingProject(mappingProjectAndResultCommitVo);
     }
     /**
@@ -93,7 +93,7 @@ public class MappingProjectController {
      * @Date: 2020/7/17 0017 8:52
      */
     @PostMapping("/insertMappingProject")
-    public ResultData insertMappingProject(MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
+    public ResultData insertMappingProject(@RequestBody MappingProjectAndResultCommitVo mappingProjectAndResultCommitVo){
         return mappingProjectService.insertMappingProject(mappingProjectAndResultCommitVo);
     }
     /**
@@ -106,7 +106,7 @@ public class MappingProjectController {
      * @Date: 2020/7/16 0016 21:11
      */
     @DeleteMapping("deleteMappingProjectAndResult")
-    public ResultData deleteMappingProjectAndResult(Long id){
+    public ResultData deleteMappingProjectAndResult(@RequestParam("id") Long id){
         return mappingProjectService.deleteMappingProjectAndResult(id);
     }
     /**
@@ -128,7 +128,7 @@ public class MappingProjectController {
      * @Date: 2020/7/17 0017 11:14
      */
     @GetMapping("/selectMappingProjectByProjectNameAndProjectTypeAndStartDate")
-    public ResultData selectMappingProjectByProjectNameAndProjectTypeAndStartDate(String projectName,String projectType,String startDate){
+    public ResultData selectMappingProjectByProjectNameAndProjectTypeAndStartDate(@RequestParam("projectName") String projectName,@RequestParam("projectType") String projectType,@RequestParam("startDate") String startDate){
         return mappingProjectService.selectMappingProjectByProjectNameAndProjectTypeAndStartDate(projectName, projectType, startDate);
     }
     /**
@@ -155,7 +155,7 @@ public class MappingProjectController {
      * @Date: 2020/7/17 0017 15:15
      */
     @GetMapping("/selectMappingProjectByProjectName")
-    public ResultData selectMappingProjectByProjectName(MappingProject mappingProject) {
+    public ResultData selectMappingProjectByProjectName(@RequestParam MappingProject mappingProject) {
         return mappingProjectService.selectMappingProjectByProjectName(mappingProject);
 
     }
@@ -174,7 +174,7 @@ public class MappingProjectController {
      * @return
      */
     @GetMapping("/mappingProject/selectAllMappingProjectByprojectName")
-    public ResultData selectAllMappingProject(@RequestParam String projectName, @RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize) {
+    public ResultData selectAllMappingProject(@RequestParam("projectName") String projectName, @RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize) {
         return mappingProjectService.selectAllMappingProject(projectName, curpage, pagesize);
     }
 
@@ -182,7 +182,7 @@ public class MappingProjectController {
      * 根据项目id查询审核记录
      */
     @GetMapping("/mappingProject/selectAuditRecords")
-    public ResultData selectAuditRecords(@RequestParam String id, @RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize) {
+    public ResultData selectAuditRecords(@RequestParam("id") String id, @RequestParam(value = "curpage", required = false, defaultValue = "1") int curpage, @RequestParam(value = "pagesize", required = false, defaultValue = "5") int pagesize) {
         return mappingProjectService.selectAuditRecords(id, curpage, pagesize);
     }
 
@@ -205,7 +205,7 @@ public class MappingProjectController {
      */
 
     @GetMapping("/mappingProject/selectResourceAndResult")
-    public ResultData selectResourceAndResult(@RequestParam String id){
+    public ResultData selectResourceAndResult(@RequestParam("id") String id){
         return mappingProjectService.selectResourceAndResult( id);
 
     }

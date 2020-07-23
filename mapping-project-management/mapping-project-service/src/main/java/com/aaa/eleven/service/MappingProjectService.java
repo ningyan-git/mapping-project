@@ -147,20 +147,22 @@ public class MappingProjectService extends BaseService<MappingProject> {
                     Integer i2 = resultCommitMapper.insertResultCommit(resultCommit);
                     //新增审核记录
                     int i3 = auditMapper.insert(audit);
-                    MultipartFile contractFile = mappingProjectAndResultCommitVo.getContractFile();
-                    String contractFileName = mappingProjectAndResultCommitVo.getContractFileName();
+                    MultipartFile[] contractFiles = mappingProjectAndResultCommitVo.getContractFile();
                     Long id = mappingProjectAndResultCommitVo.getMapping_id();
                     //新增合同附件
-                    Resource resource1 = setResource(contractFile, contractFileName, id, uploadService);
-                    if(resource1 != null){
-                        resourceService.insert(resource1);
+                    for(MultipartFile contractFile: contractFiles ){
+                        Resource resource = setResource(contractFile, id, uploadService);
+                        if(resource != null){
+                            resourceService.insert(resource);
+                        }
                     }
                     //新增范围线附件
-                    MultipartFile rangetFile = mappingProjectAndResultCommitVo.getRangetFile();
-                    String rangeFileName = mappingProjectAndResultCommitVo.getRangeFileName();
-                    Resource resource2 = setResource(rangetFile, rangeFileName, id, uploadService);
-                    if(resource2 != null){
-                        resourceService.insert(resource2);
+                    MultipartFile[] rangetFiles = mappingProjectAndResultCommitVo.getRangetFile();
+                    for(MultipartFile rangetFile: rangetFiles ){
+                        Resource resource = setResource(rangetFile, id, uploadService);
+                        if(resource != null){
+                            resourceService.insert(resource);
+                        }
                     }
                     if(i1 > 0 && i2 > 0 && i3 > 0){
                         return 1;
@@ -190,28 +192,41 @@ public class MappingProjectService extends BaseService<MappingProject> {
                 ResultCommit resultCommit = setResultCommit(mappingProjectAndResultCommitVo);
                 Audit audit = setAudit(mappingProjectAndResultCommitVo);
                 if(mappingProject != null && resultCommit != null && audit != null){
-                    //新增项目
+                    //修改项目
                     Integer i1 = mappingProjectMapper.updateMappingProjectById(mappingProject);
-                    //新增commit
+                    //修改commit
                     Integer i2 = resultCommitMapper.updateResultCommit(resultCommit);
                     //新增审核记录
                     int i3 = auditMapper.insert(audit);
-                    MultipartFile contractFile = mappingProjectAndResultCommitVo.getContractFile();
-                    String contractFileName = mappingProjectAndResultCommitVo.getContractFileName();
+                    //获取到用户修改附件之前的id，为了先删除resource表的数据，然后进行插入
+                    Long[] resourceIds = mappingProjectAndResultCommitVo.getResourceIds();
+                    //遍历之前的resourceID ，在resource 进行删除
+                    if(resourceIds != null && resourceIds.length > 0){
+                        for(Long id : resourceIds){
+                            Resource resource = new Resource();
+                            resource.setId(id);
+                            resourceService.delete(resource);
+                        }
+                    }
+                    //之前resource表的数据删除之后 ，进行增加
+                    MultipartFile[] contractFiles = mappingProjectAndResultCommitVo.getContractFile();
                     Long id = mappingProjectAndResultCommitVo.getMapping_id();
-                    //修改合同附件
-                    Resource resource1 = setResource(contractFile, contractFileName, id, uploadService);
-                    if(resource1 != null){
-                        resourceService.update(resource1);
+                    //新增合同附件
+                    for(MultipartFile contractFile: contractFiles ){
+                        Resource resource = setResource(contractFile, id, uploadService);
+                        if(resource != null){
+                            resourceService.insert(resource);
+                        }
                     }
-                    //修改范围线附件
-                    MultipartFile rangetFile = mappingProjectAndResultCommitVo.getRangetFile();
-                    String rangeFileName = mappingProjectAndResultCommitVo.getRangeFileName();
-                    Resource resource2 = setResource(rangetFile, rangeFileName, id, uploadService);
-                    if(resource2 != null){
-                        resourceService.update(resource2);
+                    //新增范围线附件
+                    MultipartFile[] rangetFiles = mappingProjectAndResultCommitVo.getRangetFile();
+                    for(MultipartFile rangetFile: rangetFiles ){
+                        Resource resource = setResource(rangetFile, id, uploadService);
+                        if(resource != null){
+                            resourceService.insert(resource);
+                        }
                     }
-                    if(i1 > 0 && i2 > 0 && i3 > 0){
+                    if(i1 > 0 && i3 > 0){
                         return 1;
                     }
                 }
@@ -328,7 +343,11 @@ public class MappingProjectService extends BaseService<MappingProject> {
                 resultCommit.setResultDate(mappingProjectAndResultCommitVo.getResult_date());
                 resultCommit.setName(mappingProjectAndResultCommitVo.getResult_name());
                 resultCommit.setCreateDate(mappingProjectAndResultCommitVo.getResult_create_date());
-                resultCommit.setId(mappingProjectAndResultCommitVo.getResult_id());
+                if(mappingProjectAndResultCommitVo.getResult_id() != null){
+                    resultCommit.setId(mappingProjectAndResultCommitVo.getResult_id());
+                }else {
+                    resultCommit.setId(Long.parseLong(FileNameUtils.getFileName()));
+                }
                 //判断mappingProjectAndResultCommitVo.getMapping_id()是否为空，为空再次生成id，不为空 set
                 if(mappingProjectAndResultCommitVo.getMapping_id() != null){
                     resultCommit.setRefId(mappingProjectAndResultCommitVo.getMapping_id());
@@ -357,6 +376,7 @@ public class MappingProjectService extends BaseService<MappingProject> {
            audit.setName("项目登记审核");
            audit.setType(1);
            audit.setAuditTime(new Date());
+           audit.setCreateTime(new Date());
        }
        return audit;
    }
@@ -368,10 +388,10 @@ public class MappingProjectService extends BaseService<MappingProject> {
     * @Param [mappingProjectAndResultCommitVo]
     * @return com.aaa.eleven.model.Resource
     */
-   private Resource setResource(MultipartFile File,String FileName,Long id,UploadService uploadService){
+   private Resource setResource(MultipartFile File,Long id,UploadService uploadService){
        Resource resource1 = new Resource();
-       if(File != null && FileName != null){
-           FtpFile upload1 = uploadService.upload(File, FileName);
+       if(File != null ){
+           FtpFile upload1 = uploadService.upload(File,null);
            resource1.setId(Long.parseLong(FileNameUtils.getFileName()));
            resource1.setRefBizId(id);
            resource1.setRefBizType("附件");

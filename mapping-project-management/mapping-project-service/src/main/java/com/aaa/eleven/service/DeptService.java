@@ -23,6 +23,7 @@ public class DeptService  extends BaseService<Dept> {
      * @param ids
      * @return
      */
+
     public Integer deleteBatchByIds(List<Integer> ids){
         return deptMapper.deleteBachById(ids);
     }
